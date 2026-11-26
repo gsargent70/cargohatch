@@ -1,0 +1,29 @@
+#!/bin/sh
+# Retakes docs/screenshot.png from made-up files, with the default theme.
+# The app runs offscreen in a private mount namespace where /home holds only
+# a demo /home/sam, so nothing of this machine's files, mounts or settings
+# can show up in the picture.
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+mkdir -p "$ROOT/build/screenshot"
+cd "$ROOT/build/screenshot"
+qmake6 "$ROOT/tools/screenshot/screenshot.pro"
+make -j"$(nproc)" >/dev/null
+
+# Both live outside /home, which the namespace hides.
+DEMO="$(mktemp -d)"
+OUT="$(mktemp -d)"
+trap 'rm -rf "$DEMO" "$OUT"' EXIT
+"$ROOT/tools/screenshot/make-demo-home.sh" "$DEMO"
+cp ./screenshot "$OUT/"
+
+unshare --user --map-root-user --mount sh -c '
+    mount -t tmpfs none /home
+    mkdir -p /home/sam
+    mount --bind "$1" /home/sam
+    HOME=/home/sam XDG_CONFIG_HOME=/home/sam/.config XDG_DATA_HOME=/home/sam/.local/share \
+        QT_QPA_PLATFORM=offscreen "$2/screenshot" "$2/screenshot.png" 2>/dev/null
+' sh "$DEMO" "$OUT"
+cp "$OUT/screenshot.png" "$ROOT/docs/screenshot.png"
+echo "Wrote $ROOT/docs/screenshot.png"
