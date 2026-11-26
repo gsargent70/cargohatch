@@ -9,9 +9,7 @@
 A native Linux file manager for power users: dual-pane Listers, folder tabs,
 a scriptable command language, and deep customization.
 
-CargoHatch is a clean-room project. Its feature set is inspired by a Windows
-file manager, but it shares no code, artwork or text with it. See
-[`docs/FEATURES.md`](docs/FEATURES.md) for the feature catalog. Features are
+See [`docs/FEATURES.md`](docs/FEATURES.md) for the feature catalog. Features are
 picked from that list by ID and built, tested and released one at a time.
 
 ## Status
