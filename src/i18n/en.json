@@ -1,0 +1,82 @@
+{
+  "%n items": {
+    "one": "%n item",
+    "other": "%n items"
+  },
+  "%1 (%n tabs)": {
+    "one": "%1 (%n tab)",
+    "other": "%1 (%n tabs)"
+  },
+  "%n items, %1 selected": {
+    "one": "%n item, %1 selected",
+    "other": "%n items, %1 selected"
+  },
+  "%n items had a problem.": {
+    "one": "%n item had a problem.",
+    "other": "%n items had a problem."
+  },
+  "Delete %n items permanently?": {
+    "one": "Delete %n item permanently?",
+    "other": "Delete %n items permanently?"
+  },
+  "%n items were left alone.": {
+    "one": "%n item was left alone.",
+    "other": "%n items were left alone."
+  },
+  "Move %n items to the trash?": {
+    "one": "Move %n item to the trash?",
+    "other": "Move %n items to the trash?"
+  },
+  "%n bytes": {
+    "one": "%n byte",
+    "other": "%n bytes"
+  },
+  "%n items cut. Paste moves them.": {
+    "one": "%n item cut. Paste moves it.",
+    "other": "%n items cut. Paste moves them."
+  },
+  "%n items copied. Paste puts copies in a folder.": {
+    "one": "%n item copied. Paste puts a copy in a folder.",
+    "other": "%n items copied. Paste puts copies in a folder."
+  },
+  "Copied %n items as text.": {
+    "one": "Copied %n item as text.",
+    "other": "Copied %n items as text."
+  },
+  "%n folders couldn't be created.": {
+    "one": "%n folder couldn't be created.",
+    "other": "%n folders couldn't be created."
+  },
+  "%n folders: %1": {
+    "one": "%n folder: %1",
+    "other": "%n folders: %1"
+  },
+  "%n already exist": {
+    "one": "%n already exists",
+    "other": "%n already exist"
+  },
+  "%n hidden": {
+    "one": "%n hidden",
+    "other": "%n hidden"
+  },
+  "%n filtered out": {
+    "one": "%n filtered out",
+    "other": "%n filtered out"
+  },
+  "Delete %n aliases whose folders aren't there?": {
+    "one": "Delete %n alias whose folder isn't there?",
+    "other": "Delete %n aliases whose folders aren't there?"
+  },
+  "Open %n folders in tabs?": {
+    "one": "Open %n folder in tabs?",
+    "other": "Open %n folders in tabs?"
+  },
+  "Open %n items?": {
+    "one": "Open %n item?",
+    "other": "Open %n items?"
+  },
+  "%n items couldn't be opened, as no application is set up for them.": {
+    "one": "%n item couldn't be opened, as no application is set up for it.",
+    "other": "%n items couldn't be opened, as no application is set up for them."
+  }
+}

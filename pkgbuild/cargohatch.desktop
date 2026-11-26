@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=CargoHatch
+GenericName=File Manager
+Comment=A power-user file manager
+Exec=cargohatch %f
+Icon=cargohatch
+Terminal=false
+Categories=System;FileTools;FileManager;Utility;
+MimeType=inode/directory;
+StartupWMClass=cargohatch

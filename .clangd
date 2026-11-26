@@ -1,0 +1,15 @@
+# qmake writes no compile_commands.json, so tell clangd where Qt lives.
+CompileFlags:
+  Add:
+    - -std=c++17
+    - -fPIC
+    - -DQT_CORE_LIB
+    - -DQT_GUI_LIB
+    - -DQT_WIDGETS_LIB
+    - -DQT_TESTLIB_LIB
+    - -I/usr/include/qt6
+    - -I/usr/include/qt6/QtCore
+    - -I/usr/include/qt6/QtGui
+    - -I/usr/include/qt6/QtWidgets
+    - -I/usr/include/qt6/QtTest
+    - -I../src

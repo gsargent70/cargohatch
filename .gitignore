@@ -1,0 +1,15 @@
+# Build output
+/build/
+/pkgbuild/pkg/
+/pkgbuild/src/
+*.pkg.tar.*
+*.o
+
+# Editors / OS
+*.swp
+.vscode/
+.idea/
+
+# Windows binaries
+*.exe
+*.dll

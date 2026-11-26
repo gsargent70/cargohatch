@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="i18n/en.json">i18n/en.json</file>
+        <file alias="logo.png">../assets/logo/cargohatch.png</file>
+        <file alias="LICENSE">../LICENSE</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="16.png">../assets/icons/hicolor/16x16/apps/cargohatch.png</file>
+        <file alias="32.png">../assets/icons/hicolor/32x32/apps/cargohatch.png</file>
+        <file alias="48.png">../assets/icons/hicolor/48x48/apps/cargohatch.png</file>
+        <file alias="64.png">../assets/icons/hicolor/64x64/apps/cargohatch.png</file>
+        <file alias="128.png">../assets/icons/hicolor/128x128/apps/cargohatch.png</file>
+        <file alias="256.png">../assets/icons/hicolor/256x256/apps/cargohatch.png</file>
+        <file alias="512.png">../assets/icons/hicolor/512x512/apps/cargohatch.png</file>
+    </qresource>
+</RCC>
