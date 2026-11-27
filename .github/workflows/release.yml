@@ -1,0 +1,30 @@
+name: Release
+
+# Builds the Arch package in a clean container and attaches it to the release,
+# so the package doesn't carry anything from the machine that tagged it.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Install the build tools and Qt
+        run: |
+          pacman -Syu --noconfirm --needed base-devel git github-cli qt6-base qt6-wayland ttf-dejavu
+          # makepkg won't run as root.
+          useradd -m packager
+      - uses: actions/checkout@v4
+      - name: Build the package
+        run: |
+          chown -R packager "$GITHUB_WORKSPACE"
+          su packager -c 'cd pkgbuild && makepkg -f'
+      - name: Attach it to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" pkgbuild/cargohatch-[0-9]*.pkg.tar.zst --repo "$GITHUB_REPOSITORY"

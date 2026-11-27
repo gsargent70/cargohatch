@@ -1,5 +1,7 @@
 # CargoHatch
 
+[![Test](https://github.com/gsargent70/cargohatch/actions/workflows/test.yml/badge.svg)](https://github.com/gsargent70/cargohatch/actions/workflows/test.yml)
+
 <p align="center">
   <img src="assets/logo/cargohatch.png" alt="CargoHatch" width="640">
 </p>
