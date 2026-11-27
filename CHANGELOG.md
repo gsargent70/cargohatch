@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- A viewer pane (F11, or View → Viewer Pane) previews the item under the
+  cursor: images, including animated ones; text; a hex dump of other files;
+  the first page of a PDF, when poppler is installed; audio and video, with
+  a play button and a position slider; and how many items are in a folder.
+  It sits beside or below the files, can be resized, and remembers all that
+  with the window and in layouts. Its padlock keeps a file in view while you
+  move on, and its arrows step through the list.
+- Settings → Viewer Pane can keep the last item in view when nothing is
+  selected, and wrap long lines of text.
+
 ## 0.2.0 (2026-11-27)
 
 The first public release. CargoHatch was two sides of tabs in 0.1.0; it is

@@ -164,6 +164,12 @@ public:
     QString highlightedFolder() const;
     // The selected items' full paths, in display order.
     QStringList selectedPaths() const;
+    // What the viewer pane shows (LST-09): the item under the cursor when it
+    // is selected, or else the first selected item; empty when nothing is.
+    QString previewPath() const;
+    // Moves the cursor `delta` items on and selects just that item, for the
+    // viewer pane's previous and next buttons. False at either end.
+    bool stepSelection(int delta);
     int selectedCount() const;
     // Selects exactly the items with these names, if they are here.
     void selectNames(const QStringList &names);
@@ -243,6 +249,8 @@ signals:
     void newTabRequested(const QString &path);
     // Enter, or Open, on several selected items (IDEA-11).
     void openSelectionRequested();
+    // The cursor or the selection moved, so previewPath() may have changed.
+    void previewChanged();
     // A right click, or the menu key, at `position` on the screen; on the
     // selected items, or on the folder itself (CUST-15).
     void contextMenuRequested(const QPoint &position, bool onItems);

@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Install the build tools and Qt
         run: |
-          pacman -Syu --noconfirm --needed base-devel git github-cli qt6-base qt6-wayland ttf-dejavu
+          pacman -Syu --noconfirm --needed base-devel git github-cli qt6-base qt6-wayland qt6-multimedia qt6-multimedia-ffmpeg poppler ttf-dejavu
           # makepkg won't run as root.
           useradd -m packager
       - uses: actions/checkout@v4

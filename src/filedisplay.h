@@ -91,6 +91,8 @@ signals:
     void currentTabChanged(FolderTab *tab);
     void tabPathChanged(FolderTab *tab);
     void tabStatusChanged(FolderTab *tab);
+    // The tab's cursor or selection moved (for the viewer pane).
+    void tabPreviewChanged(FolderTab *tab);
     void tabCountChanged();
     void moveTabRequested(int index);
     // Sent just before a closed tab is deleted, so it can be reopened later.

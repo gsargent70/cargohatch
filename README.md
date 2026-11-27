@@ -58,6 +58,10 @@ still change between versions.
   files come and go.
 - Hidden files stay hidden until you press Ctrl+H, and you can hide your own
   patterns too.
+- A viewer pane (F11), beside or below the files, previews what's under the
+  cursor: images, text, a hex dump of anything else, the first page of a
+  PDF, audio and video, and how much is in a folder. Lock it to keep a file
+  in view while you move on.
 
 **Working with files**
 - Copy or move to the other side, to any folder you type or pick, or
@@ -97,7 +101,8 @@ still change between versions.
 ## Install
 
 CargoHatch builds into an Arch package. You need `qt6-base`, `qt6-wayland`,
-`gcc` and `make`.
+`qt6-multimedia`, `gcc` and `make`. `poppler` is optional, for previews of
+PDFs.
 
 ```sh
 git clone https://github.com/gsargent70/cargohatch.git
@@ -146,6 +151,7 @@ CargoHatch is written in C++17 with Qt 6 Widgets and built with qmake.
 | Ctrl+Tab | Switch tabs, most recently used first |
 | Ctrl+Shift+D | Dual display on or off |
 | F9 | Folder tree on or off |
+| F11 | Viewer pane on or off |
 | Ctrl+B | Add to favourites |
 | Shift+F4 | Open a terminal here |
 | Ctrl+N, Ctrl+Shift+W | New window, close window |

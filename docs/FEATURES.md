@@ -53,7 +53,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | LST-06 | Swap the two sides; copy path to the other side; open the item in the other side (`OPENINDUAL/LEFT/RIGHT/DEST`) | L | M | Done v0.1.0 |  |
 | LST-07 | Adjustable split size between displays (`DUALSIZE`) | L | S | Done v0.1.0 |  |
 | LST-08 | **Folder tree** panel: on/off/toggle; left/right; one tree per side, or one shared tree | L | L | Done v0.2.0 | F9. Content, looks and following are TREE-01/03/04 |
-| LST-09 | **Viewer pane** (preview panel): horizontal/vertical, size, lock | L | L | Idea |  |
+| LST-09 | **Viewer pane** (preview panel): horizontal/vertical, size, lock | L | L | Done (unreleased) | One pane per window, showing the active side's item under the cursor. F11 or View → Viewer Pane; beside or below the files; resized with its splitter; locked from its padlock or the View menu. Remembered with the window and in layouts |
 | LST-10 | **Metadata pane** (edit tags/properties of the selection) | L | L | Idea |  |
 | LST-11 | **Utility panel** with modes: Find, Simple Find, Advanced Find, Sync, Duplicates, Undo log, File log, FTP log, Script log, Diagnostic log, Email | L | L | Idea |  |
 | LST-12 | Status bar (on/off); styles: single, dual, independent, at bottom | L | S | Idea |  |
@@ -370,7 +370,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| VWR-01 | **Viewer pane** preview of images, text, documents, audio, video, hex | L | L | Idea |  |
+| VWR-01 | **Viewer pane** preview of images, text, documents, audio, video, hex | L | L | Done (unreleased) | Images (animated too, big ones scaled as read), text (UTF-8 or Latin-1, the first 512 KB), a hex dump of anything else (the first 64 KB), the first page of PDFs with poppler's pdftoppm, audio and video with Qt Multimedia, and folder item counts. Read on worker threads. Office documents are VWR-10 |
 | VWR-02 | **Standalone image viewer**: zoom modes, fit, fullscreen, next/prev in folder, slideshow (fade, random, speed), rotate, flip, crop, save-as, gamma, checkerboard for alpha, histogram/info overlay, magnifier | L | L | Idea |  |
 | VWR-03 | Lister-linked viewer (follows the selection, both ways); reuse the existing viewer | L | M | Idea |  |
 | VWR-04 | **Marked pictures**: mark images in the viewer to build a list, then send it to a collection | L | M | Idea |  |
@@ -379,10 +379,13 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | VWR-07 | Text viewer with hex mode, find/replace, go to line, UTF-8 detection | L | L | Idea |  |
 | VWR-08 | Image formats: JPEG, PNG, GIF (animated), BMP, PCX, TGA, WebP, JPEG2000, camera RAW (LibRaw/dcraw settings), PNM; external converter commands for unknown formats | L | L | Idea |  |
 | VWR-09 | Audio tags and waveform thumbnails; movie thumbnails/preview | L (ffmpeg) | M | Idea |  |
-| VWR-10 | Document preview (Office/PDF via a plugin) | A (poppler; LibreOffice optional) | L | Idea |  |
+| VWR-10 | Document preview (Office/PDF via a plugin) | A (poppler; LibreOffice optional) | L | Idea | The first page of a PDF shows in the viewer pane (VWR-01); Office documents still to do |
 | VWR-11 | Text-file thumbnails | L | S | Idea |  |
 | VWR-12 | Viewer pane exclusions by folder | L | S | Idea |  |
 | VWR-13 | Map lookup of GPS coordinates (online services) | L | S | Idea |  |
+| VWR-14 | The viewer pane refreshes when the file it shows changes on disk, and moves on when it's deleted | L | S | Idea | Came up building VWR-01 |
+| VWR-15 | Zoom with the wheel, and rotate or flip images, in the viewer pane | L | S | Idea | Came up building VWR-01 |
+| VWR-16 | Video shows its first frame before it's played, and the pane can play media by itself | L | S | Idea | Came up building VWR-01 |
 
 ## 19. Customization: toolbars, menus, hotkeys and commands (CUST)
 
@@ -504,6 +507,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 - **v0.1.0** (pre-release, 2026-11-21): LST-01/02/03/04/06/07/19/20 (in part)/21/26 (in part), TAB-01/02/04/05/07/08/09/10/11/12/13/15/18/19, NAV-01/02
 - **v0.2.0** (first public release, 2026-11-27): VIEW-01, VIEW-02 (in part), SORT-01/02/03, COPY-01/02/03/08, DEL-01/02, SEL-01/02, REN-01, FCMD-01, CLIP-01/03, FILT-01/03, SEL-11, CUST-15, NAV-03/07, LST-08, TREE-01/03/04, FAV-01, CFG-16, LST-34, COPY-21/22, FCMD-20/21, NAV-08/18, LST-35, CUST-16/17, LOOK-07
+- **Unreleased:** LST-09, VWR-01
 
 ---
 

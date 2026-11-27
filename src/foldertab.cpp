@@ -133,6 +133,8 @@ FolderTab::FolderTab(const QString &path, QWidget *parent)
         });
     setFormat(ViewFormat());
     connect(m_details->selectionModel(), &QItemSelectionModel::selectionChanged, this, &FolderTab::statusChanged);
+    connect(m_details->selectionModel(), &QItemSelectionModel::selectionChanged, this, &FolderTab::previewChanged);
+    connect(m_details->selectionModel(), &QItemSelectionModel::currentChanged, this, &FolderTab::previewChanged);
 
     // The back and forward buttons go one step on a click and list the
     // history when held or when their arrow is clicked.
@@ -879,6 +881,30 @@ QStringList FolderTab::selectedPaths() const {
     for (const QModelIndex &index : rows)
         paths << pathAt(index);
     return paths;
+}
+
+QString FolderTab::previewPath() const {
+    const QItemSelectionModel *model = m_details->selectionModel();
+    const QModelIndex current = model->currentIndex();
+    if (current.isValid() && model->isRowSelected(current.row(), QModelIndex()))
+        return pathAt(current);
+    const QStringList selected = selectedPaths();
+    return selected.isEmpty() ? QString() : selected.first();
+}
+
+bool FolderTab::stepSelection(int delta) {
+    QAbstractItemView *view = fileView();
+    const int rows = m_proxy->rowCount();
+    if (rows == 0)
+        return false;
+    const QModelIndex current = view->currentIndex();
+    const int row = current.isValid() ? current.row() + delta : (delta > 0 ? 0 : rows - 1);
+    if (row < 0 || row >= rows)
+        return false;
+    const QModelIndex index = m_proxy->index(row, 0);
+    view->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    view->scrollTo(index);
+    return true;
 }
 
 int FolderTab::selectedCount() const {

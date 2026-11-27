@@ -1,4 +1,4 @@
-QT += core gui widgets concurrent dbus
+QT += core gui widgets concurrent dbus multimedia multimediawidgets
 
 CONFIG += c++17 release
 TARGET = cargohatch
@@ -18,6 +18,8 @@ HEADERS += \
     src/foldertreemodel.h \
     src/foldertree.h \
     src/pathcompleter.h \
+    src/preview.h \
+    src/viewerpane.h \
     src/folderaliases.h \
     src/aliasdialog.h \
     src/aboutdialog.h \
@@ -66,6 +68,8 @@ SOURCES += \
     src/foldertreemodel.cpp \
     src/foldertree.cpp \
     src/pathcompleter.cpp \
+    src/preview.cpp \
+    src/viewerpane.cpp \
     src/folderaliases.cpp \
     src/aliasdialog.cpp \
     src/aboutdialog.cpp \

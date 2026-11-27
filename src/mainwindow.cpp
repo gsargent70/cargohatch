@@ -39,6 +39,7 @@
 #include "savedsets.h"
 #include "tabswitcher.h"
 #include "terminal.h"
+#include "viewerpane.h"
 
 MainWindow::MainWindow(const QString &startPath, QSettings *settings, QWidget *parent)
     : MainWindow(ListerState::startingIn(settings ? ListerState::load(*settings, "lister") : ListerState(), startPath),
@@ -48,7 +49,9 @@ MainWindow::MainWindow(const ListerState &state, QSettings *settings, ListerMana
     : QMainWindow(parent),
       m_settings(settings),
       m_manager(manager),
-      m_outer(new QSplitter(Qt::Horizontal, this)),
+      m_viewSplit(new QSplitter(Qt::Horizontal, this)),
+      m_viewer(new ViewerPane(m_viewSplit)),
+      m_outer(new QSplitter(Qt::Horizontal, m_viewSplit)),
       m_splitter(new QSplitter(Qt::Horizontal, m_outer)),
       m_panels{new QSplitter(Qt::Horizontal, m_splitter), new QSplitter(Qt::Horizontal, m_splitter)},
       m_displays{new FileDisplay(m_panels[0]), new FileDisplay(m_panels[1])},
@@ -58,11 +61,23 @@ MainWindow::MainWindow(const ListerState &state, QSettings *settings, ListerMana
     m_splitter->setChildrenCollapsible(false);
     m_splitter->setHandleWidth(4);
     m_splitter->setObjectName("sides");
-    for (QSplitter *splitter : {m_outer, m_panels[0], m_panels[1]}) {
+    for (QSplitter *splitter : {m_viewSplit, m_outer, m_panels[0], m_panels[1]}) {
         splitter->setChildrenCollapsible(false);
         splitter->setHandleWidth(4);
     }
-    setCentralWidget(m_outer);
+    // The files come first; the pane goes after them, to the right or below.
+    m_viewSplit->insertWidget(0, m_outer);
+    m_viewSplit->setStretchFactor(0, 1);
+    m_viewSplit->setStretchFactor(1, 0);
+    m_viewer->hide();
+    connect(m_viewer, &ViewerPane::previousRequested, this, [this] { activeTab()->stepSelection(-1); });
+    connect(m_viewer, &ViewerPane::nextRequested, this, [this] { activeTab()->stepSelection(1); });
+    connect(m_viewer, &ViewerPane::lockChanged, this, [this](bool locked) {
+        if (!locked)
+            updatePreview();
+        updateChrome();
+    });
+    setCentralWidget(m_viewSplit);
     createTrees();
     m_favoritesBar = new FavoritesBar(this, this);
     addToolBar(Qt::TopToolBarArea, m_favoritesBar);
@@ -120,6 +135,10 @@ MainWindow::MainWindow(const ListerState &state, QSettings *settings, ListerMana
         connect(display, &FileDisplay::openSelectionRequested, this, &MainWindow::openSelection);
         connect(display, &FileDisplay::tabPathChanged, this, &MainWindow::updateChrome);
         connect(display, &FileDisplay::tabStatusChanged, this, &MainWindow::updateChrome);
+        connect(display, &FileDisplay::tabPreviewChanged, this, [this](FolderTab *tab) {
+            if (tab == activeTab())
+                updatePreview();
+        });
         connect(display, &FileDisplay::moveTabRequested, this,
                 [this, side](int index) { moveTabToOtherSide(side, index); });
     }
@@ -174,6 +193,11 @@ void MainWindow::applyState(const ListerState &state) {
             m_trees[t]->setExpanded(state.trees[t].expanded);
     }
     setTreeShown(state.treeShown);
+    m_viewerSize = state.viewer.size;
+    m_viewerBelow = state.viewer.below;
+    m_viewer->setLocked(state.viewer.locked);
+    placeViewer();
+    setViewerShown(state.viewer.shown);
 }
 
 ListerState MainWindow::state() const {
@@ -184,6 +208,10 @@ ListerState MainWindow::state() const {
     s.splitter = m_dual ? m_splitter->saveState() : m_splitterState;
     s.active = m_active;
     s.treeShown = m_treeShown;
+    s.viewer.shown = m_viewerShown;
+    s.viewer.below = m_viewerBelow;
+    s.viewer.size = m_viewerShown ? (m_viewerBelow ? m_viewer->height() : m_viewer->width()) : m_viewerSize;
+    s.viewer.locked = m_viewer->isLocked();
     for (int t = 0; t < 3; ++t) {
         s.trees[t].width = m_trees[t]->isVisible() ? m_trees[t]->width() : m_trees[t]->sizeHint().width();
         if (m_options.tree.remember)
@@ -625,6 +653,20 @@ void MainWindow::createActions() {
         (*slot)->setCheckable(true);
         m_tabPositionGroup->addAction(*slot);
     }
+    m_showViewer = action(m_viewMenu, {QKeySequence(Qt::Key_F11)}, [this] { setViewerShown(!m_viewerShown); });
+    m_showViewer->setCheckable(true);
+    m_viewerLayoutMenu = m_viewMenu->addMenu(QString());
+    auto *viewerGroup = new QActionGroup(this);
+    m_viewerBeside = action(m_viewerLayoutMenu, {}, [this] { setViewerBelow(false); });
+    m_viewerBelowAction = action(m_viewerLayoutMenu, {}, [this] { setViewerBelow(true); });
+    for (QAction *a : {m_viewerBeside, m_viewerBelowAction}) {
+        a->setCheckable(true);
+        viewerGroup->addAction(a);
+    }
+    m_viewerSwitch = action(m_viewerLayoutMenu, {}, [this] { setViewerBelow(!m_viewerBelow); });
+    m_viewerLayoutMenu->addSeparator();
+    m_viewerLock = action(m_viewerLayoutMenu, {}, [this](bool on) { m_viewer->setLocked(on); });
+    m_viewerLock->setCheckable(true);
     m_viewMenu->addSeparator();
     m_dualAction = action(m_viewMenu, {QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_D)},
                           [this] { setDual(!m_dual); });
@@ -879,6 +921,9 @@ void MainWindow::createActions() {
     m_optCloseWithLastTab = option(m_tabSettingsMenu, &TabOptions::closeWindowWithLastTab);
     m_tabSettingsMenu->addSeparator();
     m_optSwitcher = option(m_tabSettingsMenu, &TabOptions::ctrlTabSwitcher);
+    m_viewerSettingsMenu = m_settingsMenu->addMenu(QString());
+    choice(m_viewerSettingsMenu, &TabOptions::viewerKeepLast, QT_TR_NOOP("Keep the Last Item When Nothing Is Selected"));
+    choice(m_viewerSettingsMenu, &TabOptions::viewerWrap, QT_TR_NOOP("Wrap Long Lines of Text"));
     m_windowSettingsMenu = m_settingsMenu->addMenu(QString());
     m_rememberOnClose = action(m_windowSettingsMenu, {}, [this](bool on) {
         if (m_manager)
@@ -933,6 +978,7 @@ void MainWindow::applyTabOptions(const TabOptions &options) {
         tree->setOptions(options.tree, options.filter, inTree);
     m_favoritesBar->setFavorites(options.favorites.bar);
     m_favoritesBar->setVisible(options.favoritesBar);
+    m_viewer->setWrapText(options.viewerWrap);
     placeTrees();
     updateOptionActions();
     updateChrome();
@@ -1306,6 +1352,11 @@ void MainWindow::updateChrome() {
     }
     syncTrees();
     m_showTree->setChecked(m_treeShown);
+    m_showViewer->setChecked(m_viewerShown);
+    updatePreview();
+    m_viewerBeside->setChecked(!m_viewerBelow);
+    m_viewerBelowAction->setChecked(m_viewerBelow);
+    m_viewerLock->setChecked(m_viewer->isLocked());
 
     const FileDisplay *display = m_displays[m_active];
     m_closeTab->setEnabled((display->tabCount() > 1 || m_options.closeWindowWithLastTab) && !tab->isLocked());
@@ -1531,6 +1582,12 @@ void MainWindow::retranslate() {
     m_filterBar->setText(tr("Filter Bar"));
     m_showTree->setText(tr("Folder Tree"));
     m_tabBarMenu->setTitle(tr("Tab Position"));
+    m_showViewer->setText(tr("Viewer Pane"));
+    m_viewerLayoutMenu->setTitle(tr("Viewer Pane Layout"));
+    m_viewerBeside->setText(tr("Beside the Files"));
+    m_viewerBelowAction->setText(tr("Below the Files"));
+    m_viewerSwitch->setText(tr("Switch Layout"));
+    m_viewerLock->setText(tr("Lock Viewer Pane"));
     m_tabsTop->setText(tr("Top"));
     m_tabsBottom->setText(tr("Bottom"));
     m_tabsLeft->setText(tr("Left"));
@@ -1625,6 +1682,7 @@ void MainWindow::retranslate() {
     m_optDoubleClickCloses->setText(tr("Double-Click Closes Tab"));
     m_optCloseWithLastTab->setText(tr("Closing Last Tab Closes Window"));
     m_optSwitcher->setText(tr("Ctrl+Tab Opens Switcher"));
+    m_viewerSettingsMenu->setTitle(tr("Viewer Pane"));
     m_windowSettingsMenu->setTitle(tr("Windows"));
     m_rememberOnClose->setText(tr("Remember Window on Close"));
     m_pairWindows->setText(tr("Pair Windows as Source and Destination"));
@@ -2301,6 +2359,58 @@ void MainWindow::setTreeShown(bool shown) {
     m_treeShown = shown;
     placeTrees();
     updateChrome();
+}
+
+void MainWindow::setViewerShown(bool shown) {
+    if (shown == m_viewerShown && m_viewer->isHidden() == !shown)
+        return;
+    if (!shown) {
+        if (m_viewer->isVisible())
+            m_viewerSize = m_viewerBelow ? m_viewer->height() : m_viewer->width();
+        if (m_viewer->isAncestorOf(QApplication::focusWidget()))
+            activeTab()->setFocus();
+        m_viewer->stop();
+    }
+    m_viewerShown = shown;
+    m_viewer->setVisible(shown);
+    if (shown) {
+        placeViewer();
+        updatePreview();
+    }
+    updateChrome();
+}
+
+void MainWindow::setViewerBelow(bool below) {
+    if (below == m_viewerBelow)
+        return;
+    // A width doesn't make a good height, so the new way starts afresh.
+    m_viewerSize = 0;
+    m_viewerBelow = below;
+    placeViewer();
+    updateChrome();
+}
+
+void MainWindow::placeViewer() {
+    m_viewSplit->setOrientation(m_viewerBelow ? Qt::Vertical : Qt::Horizontal);
+    if (!m_viewerShown)
+        return;
+    int total = m_viewerBelow ? m_viewSplit->height() : m_viewSplit->width();
+    // Before the window is first laid out, the splitter has no size yet.
+    if (!m_viewSplit->isVisible() || total < 300)
+        total = m_viewerBelow ? height() - 100 : width();
+    const int wanted = m_viewerSize > 0 ? m_viewerSize : (m_viewerBelow ? total * 2 / 5 : total / 3);
+    const int pane = qBound(m_viewerBelow ? 120 : 160, wanted, qMax(160, total - 200));
+    m_viewSplit->setSizes({qMax(0, total - pane), pane});
+}
+
+void MainWindow::updatePreview() {
+    if (!m_viewerShown || m_closing || m_viewer->isLocked())
+        return;
+    FolderTab *tab = activeTab();
+    const QString path = tab ? tab->previewPath() : QString();
+    if (path.isEmpty() && m_options.viewerKeepLast)
+        return;
+    m_viewer->showPath(path);
 }
 
 void MainWindow::focusTree() {

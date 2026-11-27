@@ -58,6 +58,16 @@ struct ListerState {
     bool treeShown = false;
     Tree trees[3];
 
+    // The viewer pane (LST-09): whether it shows, below the files or beside
+    // them, its width or height (0 for the default), and whether it's locked.
+    struct Viewer {
+        bool shown = false;
+        bool below = false;
+        int size = 0;
+        bool locked = false;
+    };
+    Viewer viewer;
+
     bool isEmpty() const { return sides[0].tabs.isEmpty() && sides[1].tabs.isEmpty(); }
     int tabCount() const { return int(sides[0].tabs.size() + sides[1].tabs.size()); }
     // The folder shown in the active side's current tab.

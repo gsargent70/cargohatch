@@ -75,6 +75,10 @@
 #include "terminal.h"
 #include "theme.h"
 #include "translator.h"
+#include "preview.h"
+#include "viewerpane.h"
+#include <QPainter>
+#include <QPdfWriter>
 
 using Role = FileDisplay::Role;
 
@@ -4832,6 +4836,217 @@ private slots:
 
     // The entry reached by following `path` through the menu bar, filling
     // each menu on the way as opening it would.
+    // --- LST-09, VWR-01 ---------------------------------------------------
+
+    void previewShowsEachKind()
+    {
+        QTemporaryDir dir;
+        const QString d = dir.path();
+        QImage picture(40, 20, QImage::Format_ARGB32);
+        picture.fill(Qt::red);
+        QVERIFY(picture.save(d + "/red.png"));
+        QImage wide(5000, 10, QImage::Format_RGB32);
+        wide.fill(Qt::blue);
+        QVERIFY(wide.save(d + "/wide.png"));
+        write(d + "/notes.txt", QString::fromUtf8("Crème brûlée\nline two\n").toUtf8());
+        write(d + "/settings", "key=value\n");
+        write(d + "/blob.bin", QByteArray("AB\0\1\2", 5));
+        write(d + "/empty.txt", "");
+        write(d + "/song.mp3", "not really a song");
+        QDir(d).mkpath("folder");
+        write(d + "/folder/a", "x");
+        write(d + "/folder/b", "x");
+        write(d + "/folder/.c", "x");
+
+        using Kind = Preview::Kind;
+        Preview p = Preview::load(d + "/red.png");
+        QCOMPARE(p.kind, Kind::Image);
+        QCOMPARE(p.image.size(), QSize(40, 20));
+        QCOMPARE(p.mimeName, QString("image/png"));
+        // Big images are scaled down as they're read, but say their own size.
+        p = Preview::load(d + "/wide.png");
+        QCOMPARE(p.kind, Kind::Image);
+        QCOMPARE(p.image.width(), 4096);
+        QCOMPARE(p.imageSize, QSize(5000, 10));
+        p = Preview::load(d + "/notes.txt");
+        QCOMPARE(p.kind, Kind::Text);
+        QVERIFY(p.text.startsWith(QString::fromUtf8("Crème brûlée")));
+        QVERIFY(!p.truncated);
+        // No type of its own, but text inside.
+        QCOMPARE(Preview::load(d + "/settings").kind, Kind::Text);
+        p = Preview::load(d + "/blob.bin");
+        QCOMPARE(p.kind, Kind::Hex);
+        QCOMPARE(p.data, QByteArray("AB\0\1\2", 5));
+        p = Preview::load(d + "/empty.txt");
+        QCOMPARE(p.kind, Kind::Info);
+        QVERIFY(!p.note.isEmpty());
+        p = Preview::load(d + "/song.mp3");
+        QCOMPARE(p.kind, Kind::Media);
+        QVERIFY(!p.video);
+        p = Preview::load(d + "/folder");
+        QCOMPARE(p.kind, Kind::Folder);
+        QCOMPARE(p.items, 3);
+        QCOMPARE(p.hiddenItems, 1);
+        Preview::Limits few;
+        few.folderItems = 2;
+        p = Preview::load(d + "/folder", few);
+        QCOMPARE(p.items, 2);
+        QVERIFY(p.moreItems);
+        p = Preview::load(d + "/gone.txt");
+        QCOMPARE(p.kind, Kind::Error);
+        QVERIFY(p.error.contains("gone.txt"));
+        QCOMPARE(Preview::load(QString()).kind, Kind::None);
+
+        // Long text is cut, and says so.
+        Preview::Limits small;
+        small.textBytes = 8;
+        p = Preview::load(d + "/notes.txt", small);
+        QCOMPARE(p.kind, Kind::Text);
+        QVERIFY(p.truncated);
+    }
+
+    void previewDrawsTheFirstPageOfPdfs()
+    {
+        QTemporaryDir dir;
+        const QString file = dir.path() + "/page.pdf";
+        {
+            QPdfWriter writer(file);
+            QPainter painter(&writer);
+            painter.drawText(QPointF(100, 100), "Hello");
+        }
+        const QString renderer = Preview::pdfRenderer();
+        Preview::setPdfRenderer(QString());
+        Preview p = Preview::load(file);
+        QCOMPARE(p.kind, Preview::Kind::Info);
+        QVERIFY(p.note.contains("poppler"));
+        Preview::setPdfRenderer(renderer);
+        if (renderer.isEmpty())
+            QSKIP("pdftoppm isn't installed");
+        p = Preview::load(file);
+        QCOMPARE(p.kind, Preview::Kind::Pdf);
+        QVERIFY(!p.image.isNull());
+    }
+
+    void previewDumpsAndDecodesBytes()
+    {
+        const QString dump = Preview::hexDump(QByteArray("AB\0", 3));
+        QCOMPARE(dump, QString("00000000  41 42 00                                          |AB.|\n"));
+        QCOMPARE(Preview::hexDump(QByteArray(17, 'x')).count('\n'), 2);
+        // Narrow panes get eight to a row, and rows are as wide as they say.
+        const QString narrow = Preview::hexDump(QByteArray(16, 'x'), -1, 8);
+        QCOMPARE(narrow.count('\n'), 2);
+        QCOMPARE(narrow.section('\n', 0, 0).size(), Preview::hexRowWidth(-1, 8));
+        QCOMPARE(Preview::hexDump(QByteArray(16, 'x')).section('\n', 0, 0).size(), Preview::hexRowWidth(-1, 16));
+        bool isText = false;
+        QCOMPARE(Preview::decodeText(QString::fromUtf8("é").toUtf8(), &isText), QString::fromUtf8("é"));
+        QVERIFY(isText);
+        // A character cut in two at the end is left out, not taken as Latin-1.
+        QCOMPARE(Preview::decodeText(QByteArray("ab\xc3", 3), &isText), QString("ab"));
+        // Not UTF-8: Latin-1.
+        QCOMPARE(Preview::decodeText(QByteArray("caf\xe9 au lait"), &isText), QString::fromLatin1("caf\xe9 au lait"));
+        Preview::decodeText(QByteArray("a\0b", 3), &isText);
+        QVERIFY(!isText);
+    }
+
+    void viewerPaneFollowsTheSelection()
+    {
+        QTemporaryDir dir;
+        write(dir.path() + "/a.txt", "first file");
+        write(dir.path() + "/b.txt", "second file");
+        write(dir.path() + "/c.bin", QByteArray("\0\0", 2));
+        MainWindow w(dir.path());
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        FolderTab *tab = w.activeTab();
+        QTRY_COMPARE(tab->itemCount(), 3);
+        ViewerPane *pane = w.viewerPane();
+        QVERIFY(!pane->isVisible());
+        QVERIFY(!w.isViewerShown());
+
+        w.setViewerShown(true);
+        QVERIFY(pane->isVisible());
+        QTRY_COMPARE(pane->kind(), Preview::Kind::None);
+        tab->selectNames({"a.txt"});
+        const QString a = canonical(dir.path()) + "/a.txt";
+        QTRY_COMPARE(pane->preview().path, a);
+        QCOMPARE(pane->kind(), Preview::Kind::Text);
+        QCOMPARE(pane->contentText(), QString("first file"));
+        QVERIFY(pane->detailsText().contains(FileModel::sizeText(10)));
+
+        // The next button moves the selection, and the pane goes with it.
+        emit pane->nextRequested();
+        QCOMPARE(tab->selectedPaths(), QStringList({canonical(dir.path()) + "/b.txt"}));
+        QTRY_COMPARE(pane->contentText(), QString("second file"));
+
+        // Locked, it keeps its file.
+        pane->setLocked(true);
+        tab->selectNames({"c.bin"});
+        QTest::qWait(150);
+        QCOMPARE(pane->contentText(), QString("second file"));
+        pane->setLocked(false);
+        QTRY_COMPARE(pane->kind(), Preview::Kind::Hex);
+        QVERIFY(pane->contentText().startsWith("00000000  00 00"));
+
+        // Nothing selected, nothing shown, unless the last is kept.
+        tab->selectNone();
+        QTRY_COMPARE(pane->kind(), Preview::Kind::None);
+        TabOptions options = w.tabOptions();
+        options.viewerKeepLast = true;
+        w.setTabOptions(options);
+        tab->selectNames({"a.txt"});
+        QTRY_COMPARE(pane->preview().path, a);
+        tab->selectNone();
+        QTest::qWait(150);
+        QCOMPARE(pane->preview().path, a);
+
+        // Hiding it stops it loading.
+        w.setViewerShown(false);
+        QVERIFY(!pane->isVisible());
+        tab->selectNames({"b.txt"});
+        QTest::qWait(150);
+        QCOMPARE(pane->preview().path, a);
+    }
+
+    void viewerPaneSitsBesideOrBelow()
+    {
+        QTemporaryDir dir;
+        const QString file = dir.path() + "/cargohatch.conf";
+        {
+            QSettings settings(file, QSettings::IniFormat);
+            MainWindow w(dir.path(), &settings);
+            w.show();
+            QVERIFY(QTest::qWaitForWindowExposed(&w));
+            // F11, from the View menu.
+            QAction *show = menuEntry(w, {"View", "Viewer Pane"});
+            QVERIFY(show);
+            QCOMPARE(show->shortcut(), QKeySequence(Qt::Key_F11));
+            show->trigger();
+            QVERIFY(w.isViewerShown());
+            QVERIFY(show->isChecked());
+            ViewerPane *pane = w.viewerPane();
+            auto *split = qobject_cast<QSplitter *>(pane->parentWidget());
+            QCOMPARE(split->orientation(), Qt::Horizontal);
+            QCOMPARE(split->indexOf(pane), 1);
+            QVERIFY(pane->width() >= 160 && pane->width() < w.width() / 2);
+            menuEntry(w, {"View", "Viewer Pane Layout", "Below the Files"})->trigger();
+            QVERIFY(w.isViewerBelow());
+            QCOMPARE(split->orientation(), Qt::Vertical);
+            QVERIFY(menuEntry(w, {"View", "Viewer Pane Layout", "Below the Files"})->isChecked());
+            menuEntry(w, {"View", "Viewer Pane Layout", "Lock Viewer Pane"})->trigger();
+            QVERIFY(pane->isLocked());
+            QVERIFY(entries(w, {"Settings", "Viewer Pane"}).contains("Wrap Long Lines of Text"));
+            w.saveSettings();
+        }
+        QSettings settings(file, QSettings::IniFormat);
+        MainWindow w(dir.path(), &settings);
+        QVERIFY(w.isViewerShown());
+        QVERIFY(w.isViewerBelow());
+        QVERIFY(w.viewerPane()->isLocked());
+        QVERIFY(menuEntry(w, {"View", "Viewer Pane"})->isChecked());
+        w.setViewerShown(false);
+        QVERIFY(!menuEntry(w, {"View", "Viewer Pane"})->isChecked());
+    }
+
     static QAction *menuEntry(QMainWindow &w, const QStringList &path)
     {
         auto plain = [](QString text) { return text.section('\t', 0, 0).remove('&'); };

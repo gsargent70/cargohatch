@@ -117,6 +117,10 @@ struct TabOptions {
     QString createThen = QStringLiteral("select");
     bool createSeveral = false;
     QStringList createNames;
+    // The viewer pane (LST-09): keep showing the last item when nothing is
+    // selected, and wrap long lines of text.
+    bool viewerKeepLast = false;
+    bool viewerWrap = false;
     // CLIP-03.
     bool copyNamesOneLine = false;
     QStringList nameFormats;

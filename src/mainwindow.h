@@ -14,6 +14,7 @@
 class FolderPicker;
 class FolderTab;
 class FolderTree;
+class ViewerPane;
 class ListerManager;
 class ShortcutsDialog;
 class OperationRunner;
@@ -174,6 +175,12 @@ public slots:
     // Puts the keyboard in the tree, showing it if need be.
     void focusTree();
     void editTreeOptions();
+    // LST-09: the viewer pane, beside the files or below them.
+    bool isViewerShown() const { return m_viewerShown; }
+    void setViewerShown(bool shown);
+    bool isViewerBelow() const { return m_viewerBelow; }
+    void setViewerBelow(bool below);
+    ViewerPane *viewerPane() const { return m_viewer; }
     // FAV-01: asks for a name and branch, then adds `path` (or the current
     // folder); `onBar` adds it to the bar without asking.
     void addFavorite(const QString &path = {}, bool onBar = false);
@@ -245,6 +252,18 @@ private:
 
     QSettings *m_settings;
     ListerManager *m_manager;
+    // The viewer pane beside or below everything else.
+    QSplitter *m_viewSplit;
+    ViewerPane *m_viewer;
+    bool m_viewerShown = false;
+    bool m_viewerBelow = false;
+    // Its width or height when last shown; 0 for the default.
+    int m_viewerSize = 0;
+    void placeViewer();
+    // Shows what the active tab has under its cursor, unless locked.
+    void updatePreview();
+    QAction *m_showViewer, *m_viewerBeside, *m_viewerBelowAction, *m_viewerSwitch, *m_viewerLock;
+    QMenu *m_viewerLayoutMenu, *m_viewerSettingsMenu;
     // The window's tree beside everything else.
     QSplitter *m_outer;
     // The two sides, and each side's tree beside its display.

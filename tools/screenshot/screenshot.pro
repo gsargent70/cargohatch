@@ -1,5 +1,5 @@
 # Takes docs/screenshot.png; run it with bin/screenshot.
-QT += core gui widgets concurrent dbus
+QT += core gui widgets concurrent dbus multimedia multimediawidgets
 CONFIG += c++17
 TARGET = screenshot
 TEMPLATE = app

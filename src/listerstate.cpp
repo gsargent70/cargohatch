@@ -48,6 +48,10 @@ void ListerState::save(QSettings &settings, const QString &group, bool tabsOnly)
             if (!trees[t].expanded.isEmpty())
                 settings.setValue(key + "/expanded", trees[t].expanded);
         }
+        settings.setValue("viewer/shown", viewer.shown);
+        settings.setValue("viewer/below", viewer.below);
+        settings.setValue("viewer/size", viewer.size);
+        settings.setValue("viewer/locked", viewer.locked);
     }
     settings.setValue("active", active);
     for (int s = 0; s < 2; ++s) {
@@ -92,6 +96,10 @@ ListerState ListerState::load(QSettings &settings, const QString &group) {
         state.trees[t].width = settings.value(key + "/width", 0).toInt();
         state.trees[t].expanded = settings.value(key + "/expanded").toStringList();
     }
+    state.viewer.shown = settings.value("viewer/shown", false).toBool();
+    state.viewer.below = settings.value("viewer/below", false).toBool();
+    state.viewer.size = qMax(0, settings.value("viewer/size", 0).toInt());
+    state.viewer.locked = settings.value("viewer/locked", false).toBool();
     state.active = qBound(0, settings.value("active", 0).toInt(), 1);
     for (int s = 0; s < 2; ++s) {
         const QString prefix = QString("side%1").arg(s);

@@ -75,6 +75,8 @@ TabOptions TabOptions::load(QSettings &settings) {
     o.completeLocalOnly = settings.value("completion/localOnly", o.completeLocalOnly).toBool();
     o.completePopup = settings.value("completion/popup", o.completePopup).toBool();
     o.completeOnArrows = settings.value("completion/onArrows", o.completeOnArrows).toBool();
+    o.viewerKeepLast = settings.value("viewer/keepLast", o.viewerKeepLast).toBool();
+    o.viewerWrap = settings.value("viewer/wrap", o.viewerWrap).toBool();
     const int aliases = settings.beginReadArray("aliases");
     for (int i = 0; i < aliases; ++i) {
         settings.setArrayIndex(i);
@@ -159,6 +161,8 @@ void TabOptions::save(QSettings &settings) const {
     settings.setValue("completion/localOnly", completeLocalOnly);
     settings.setValue("completion/popup", completePopup);
     settings.setValue("completion/onArrows", completeOnArrows);
+    settings.setValue("viewer/keepLast", viewerKeepLast);
+    settings.setValue("viewer/wrap", viewerWrap);
     settings.remove("aliases");
     settings.beginWriteArray("aliases", int(aliases.size()));
     for (int i = 0; i < aliases.size(); ++i) {

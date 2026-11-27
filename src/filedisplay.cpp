@@ -425,6 +425,7 @@ void FileDisplay::connectTab(FolderTab *tab) {
         emit tabPathChanged(tab);
     });
     connect(tab, &FolderTab::statusChanged, this, [this, tab] { emit tabStatusChanged(tab); });
+    connect(tab, &FolderTab::previewChanged, this, [this, tab] { emit tabPreviewChanged(tab); });
     // The window's View menu shows the tab's mode, so it hears of changes too.
     connect(tab, &FolderTab::formatChanged, this, [this, tab] { emit tabStatusChanged(tab); });
     connect(tab, &FolderTab::decorationChanged, this, [this, tab] {
