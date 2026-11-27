@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # Arch has the same Qt as the people who install CargoHatch; Ubuntu's is too old.
+    container: archlinux:latest
+    steps:
+      - name: Install the build tools and Qt
+        run: pacman -Syu --noconfirm --needed base-devel git qt6-base qt6-wayland
+      - uses: actions/checkout@v4
+      - name: Build
+        run: bin/build
+      - name: Test
+        run: bin/test

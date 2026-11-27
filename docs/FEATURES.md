@@ -52,7 +52,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | LST-05 | When switching to dual: set new panel as source; open a specific folder or tab group in it | L | M | Idea |  |
 | LST-06 | Swap the two sides; copy path to the other side; open the item in the other side (`OPENINDUAL/LEFT/RIGHT/DEST`) | L | M | Done v0.1.0 |  |
 | LST-07 | Adjustable split size between displays (`DUALSIZE`) | L | S | Done v0.1.0 |  |
-| LST-08 | **Folder tree** panel: on/off/toggle; left/right; one tree per side, or one shared tree | L | L | Done (unreleased) | F9. Content, looks and following are TREE-01/03/04 |
+| LST-08 | **Folder tree** panel: on/off/toggle; left/right; one tree per side, or one shared tree | L | L | Done v0.2.0 | F9. Content, looks and following are TREE-01/03/04 |
 | LST-09 | **Viewer pane** (preview panel): horizontal/vertical, size, lock | L | L | Idea |  |
 | LST-10 | **Metadata pane** (edit tags/properties of the selection) | L | L | Idea |  |
 | LST-11 | **Utility panel** with modes: Find, Simple Find, Advanced Find, Sync, Duplicates, Undo log, File log, FTP log, Script log, Diagnostic log, Email | L | L | Idea |  |
@@ -78,8 +78,8 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | LST-31 | Layout folders; hide layouts from lists | L | S | Idea | Split from LST-19 |
 | LST-32 | Default window position rules (fixed, same place, under the mouse) | A (Wayland limits positioning) | M | Idea | Split from LST-20 |
 | LST-33 | Tab key moves focus between UI elements or swaps source and destination | L | S | Idea | Split from LST-26; worth it once there's a tree or more panes |
-| LST-34 | Errors in the status bar clear on the next key or click, or by themselves after 8 seconds | L | S | Done (unreleased) | Was IDEA-08. Being sent home from a folder that did not open stays until a key or click |
-| LST-35 | A single window locked as the destination copies and moves from its paired source window, and says so | L | S | Done (unreleased) | Was IDEA-17. Its menu says "Copy from Source Window" |
+| LST-34 | Errors in the status bar clear on the next key or click, or by themselves after 8 seconds | L | S | Done v0.2.0 | Was IDEA-08. Being sent home from a folder that did not open stays until a key or click |
+| LST-35 | A single window locked as the destination copies and moves from its paired source window, and says so | L | S | Done v0.2.0 | Was IDEA-17. Its menu says "Copy from Source Window" |
 
 ## 2. Folder tabs (TAB)
 
@@ -112,12 +112,12 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 |---|---|---|---|---|---|
 | NAV-01 | Back/forward/up/root; history drop-down lists (names only, icons, sorted) | L | M | Done v0.1.0 |  |
 | NAV-02 | **Breadcrumb Location Bar** with clickable components, drop-down sub-folder menus, ghost components after going up | L | M | Done v0.1.0 |  |
-| NAV-03 | Editable path field with **path completion** (popup list, network server names, ↑/↓ only) | L | M | Done (unreleased) | Network server names split out as NAV-17 |
+| NAV-03 | Editable path field with **path completion** (popup list, network server names, ↑/↓ only) | L | M | Done v0.2.0 | Network server names split out as NAV-17 |
 | NAV-04 | What the path-field menus include: archives, hidden folders, system folders, favourites, empty drives | L | M | Idea |  |
 | NAV-05 | Location Bar buttons: back/forward/up, copy-to-other-side, swap, layout toggle, close | L | M | Idea |  |
 | NAV-06 | Drive buttons/menu, filtered by type (fixed, network, removable, optical, RAM disk, MTP) | A (mounts/udisks) | M | Idea |  |
-| NAV-07 | **Folder aliases** (e.g. `/downloads`), built-in plus user-defined | L | M | Done (unreleased) | Written `~downloads`, as in zsh, since `/name` is a real path on Linux; a typed `/name` still works if no such folder exists |
-| NAV-08 | Select previous folder when going up; highlight it with a frame | L | S | Done (unreleased) | By any way up (Up, Back, the location bar, root). The cursor is framed in the accent colour, not selected, so the next key can't act on it by surprise |
+| NAV-07 | **Folder aliases** (e.g. `/downloads`), built-in plus user-defined | L | M | Done v0.2.0 | Written `~downloads`, as in zsh, since `/name` is a real path on Linux; a typed `/name` still works if no such folder exists |
+| NAV-08 | Select previous folder when going up; highlight it with a frame | L | S | Done v0.2.0 | By any way up (Up, Back, the location bar, root). The cursor is framed in the accent colour, not selected, so the next key can't act on it by surprise |
 | NAV-09 | `..` parent item in listings (optional; hidden when grouped) | L | S | Idea |  |
 | NAV-10 | Show folder read errors inline, with "attempt access"/"retry" links | L | M | Idea |  |
 | NAV-11 | **Quick Go**: type to jump to folders from history, favourites, aliases, recent, smart favourites | L | M | Idea |  |
@@ -127,14 +127,14 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | NAV-15 | Eject device from Go | A (udisks) | S | Idea |  |
 | NAV-16 | Open a folder in the app from other programs (CLI, desktop file, "Open in…" handler); replace the default file manager for folders | A (xdg-mime inode/directory) | M | Idea |  |
 | NAV-17 | Complete network server names in the path field | L | S | Idea | Split from NAV-03; needs NET-01 |
-| NAV-18 | Typing or passing a **file's path** opens its folder with the file selected | L | S | Done (unreleased) | Was IDEA-12. In the location bar, on the command line, and for locked tabs. A hidden file says why it can't be seen |
+| NAV-18 | Typing or passing a **file's path** opens its folder with the file selected | L | S | Done v0.2.0 | Was IDEA-12. In the location bar, on the command line, and for locked tabs. A hidden file says why it can't be seen |
 
 ## 4. File display: view modes and columns (VIEW)
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| VIEW-01 | View modes: Large icons, Small icons, List, Details, **Power** (details plus extra mouse/keyboard modes), Thumbnails, Tiles; cycle | L | L | Done (unreleased, e9a8a19) | Thumbnails fixed at 128px, in memory only (see VIEW-08, VIEW-10) |
-| VIEW-02 | **Details columns**: a very large set (see the column ideas at the end). Add, remove, reorder, resize, auto-size, freeze columns | L | L | Done (unreleased, e9a8a19) | 12 columns. Frozen columns split out as VIEW-25 |
+| VIEW-01 | View modes: Large icons, Small icons, List, Details, **Power** (details plus extra mouse/keyboard modes), Thumbnails, Tiles; cycle | L | L | Done v0.2.0 | Thumbnails fixed at 128px, in memory only (see VIEW-08, VIEW-10) |
+| VIEW-02 | **Details columns**: a very large set (see the column ideas at the end). Add, remove, reorder, resize, auto-size, freeze columns | L | L | Done v0.2.0 | 12 columns. Frozen columns split out as VIEW-25 |
 | VIEW-03 | Per-column appearance: colour, font style, alignment, default width, middle ellipsis, custom title, reverse initial sort | L | M | Idea |  |
 | VIEW-04 | Relative **graphs** behind size and date columns; free-space graphs for drives | L | M | Idea |  |
 | VIEW-05 | Friendly dates (Today, Monday…); show seconds or milliseconds | L | S | Idea |  |
@@ -163,9 +163,9 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| SORT-01 | Sort by any column, reverse, smart toggle | L | M | Done (unreleased, e9a8a19) |  |
-| SORT-02 | Folders first / files first / mixed; keep folders alphabetical | L | M | Done (unreleased, e9a8a19) |  |
-| SORT-03 | **Natural numeric** sort; **word sort** (special hyphen handling); sort name and extension separately | L | M | Done (unreleased, e9a8a19) |  |
+| SORT-01 | Sort by any column, reverse, smart toggle | L | M | Done v0.2.0 |  |
+| SORT-02 | Folders first / files first / mixed; keep folders alphabetical | L | M | Done v0.2.0 |  |
+| SORT-03 | **Natural numeric** sort; **word sort** (special hyphen handling); sort name and extension separately | L | M | Done v0.2.0 |  |
 | SORT-04 | Ignore prefixes ("The ", "A ") when sorting | L | S | Idea |  |
 | SORT-05 | **Manual sort**: drag to reorder, with the order saved per folder | L (sidecar/xattr) | M | Idea |  |
 | SORT-06 | Sort newly created or copied files into place, or append them at the end | L | S | Idea |  |
@@ -188,9 +188,9 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| FILT-01 | **Quick filter / filter bar**: type to filter in real time; wildcard, regex, any-word, partial, ignore diacritics/extension, **evaluator** expressions; clear on folder change or Esc | L | M | Done (unreleased) | Evaluator expressions split out as FILT-10 |
+| FILT-01 | **Quick filter / filter bar**: type to filter in real time; wildcard, regex, any-word, partial, ignore diacritics/extension, **evaluator** expressions; clear on folder change or Esc | L | M | Done v0.2.0 | Evaluator expressions split out as FILT-10 |
 | FILT-02 | Show/hide filters per format: file-name and folder-name wildcards/regex, attribute filters | L | M | Idea |  |
-| FILT-03 | **Global filters**: hide hidden files, hide system files, global wildcard hides | L (dotfiles) | M | Done (unreleased) | System files on Linux: names in a folder's `.hidden` file. Hiding dotfiles is on by default |
+| FILT-03 | **Global filters**: hide hidden files, hide system files, global wildcard hides | L (dotfiles) | M | Done v0.2.0 | System files on Linux: names in a folder's `.hidden` file. Hiding dotfiles is on by default |
 | FILT-04 | **Permanent filters** that can never be shown (e.g. `desktop.ini`) | L | S | Idea |  |
 | FILT-05 | Toggle "show everything" per tab (temporarily disable all filters), with an info banner | L | S | Idea |  |
 | FILT-06 | **Filter definitions**: a reusable rule builder (name, size, date, attributes, content, type, labels, nested AND/OR, sub-filters), named and shareable | L | L | Idea |  |
@@ -203,8 +203,8 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| SEL-01 | Select all / files / dirs / none / invert / reselect previous | L | S | Done (unreleased) |  |
-| SEL-02 | Select by wildcard pattern or regex (Simple dialog), deselect non-matching | L | M | Done (unreleased) |  |
+| SEL-01 | Select all / files / dirs / none / invert / reselect previous | L | S | Done v0.2.0 |  |
+| SEL-02 | Select by wildcard pattern or regex (Simple dialog), deselect non-matching | L | M | Done v0.2.0 |  |
 | SEL-03 | **Advanced select** using a filter definition; actions select, deselect, hide, hide non-matching | L | L | Idea |  |
 | SEL-04 | Select by date (newest/oldest), by size (largest/smallest) | L | S | Idea |  |
 | SEL-05 | **Compare-select across sides**: select items in source that are/aren't in destination (with or without extension) | L | M | Idea |  |
@@ -213,7 +213,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | SEL-08 | Save and restore named selections | L | S | Idea |  |
 | SEL-09 | Navigate selection: first, last, next, prev (mark, row, sort field) | L | S | Idea |  |
 | SEL-10 | Select empty folders / zero-byte folders / duplicates | L | S | Idea |  |
-| SEL-11 | **Find-as-you-type (FAYT)**: jump to name; highlight matches, scrollbar indicators, anywhere-in-name, first-char repeat mode, prefer shorter names | L | M | Done (unreleased) | The field stays open until Esc, Enter or a click; a close timeout was left out, as a Backspace just after it would go up a folder |
+| SEL-11 | **Find-as-you-type (FAYT)**: jump to name; highlight matches, scrollbar indicators, anywhere-in-name, first-char repeat mode, prefer shorter names | L | M | Done v0.2.0 | The field stays open until Esc, Enter or a click; a close timeout was left out, as a Backspace just after it would go up a folder |
 | SEL-12 | **Quick Keys** prefixes in the FAYT field: `>` command, `?` search, `/` go to alias, `\` filter, plus script-defined prefixes | L | M | Idea |  |
 | SEL-13 | Lasso, range select; Power-mode mouse button actions (select, toggle, drag, context menu) | L | M | Idea |  |
 | SEL-14 | Single-click mode (hover to select, underline on hover) | L | S | Idea |  |
@@ -223,14 +223,14 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| COPY-01 | Copy/move to destination, to a chosen folder (`TO=ask`), or here (duplicate); create the destination folder | L | M | Done (unreleased) |  |
-| COPY-02 | **When-exists policy**: ask, skip, replace, rename new, rename old, resume, merge, keep newer, recycle old | L | M | Done (unreleased) |  |
-| COPY-03 | **Confirm File Replace** dialog: side-by-side info and thumbnails, Resume/Replace/Skip/Rename with drop-down variants, apply to all, rename presets | L | M | Done (unreleased) | "Choose a Name…" instead of rename presets; no "make All the default" option |
+| COPY-01 | Copy/move to destination, to a chosen folder (`TO=ask`), or here (duplicate); create the destination folder | L | M | Done v0.2.0 |  |
+| COPY-02 | **When-exists policy**: ask, skip, replace, rename new, rename old, resume, merge, keep newer, recycle old | L | M | Done v0.2.0 |  |
+| COPY-03 | **Confirm File Replace** dialog: side-by-side info and thumbnails, Resume/Replace/Skip/Rename with drop-down variants, apply to all, rename presets | L | M | Done v0.2.0 | "Choose a Name…" instead of rename presets; no "make All the default" option |
 | COPY-04 | **Update copy**: only when newer, larger or smaller; size/date tolerance | L | M | Idea |  |
 | COPY-05 | Preserve timestamps (modified/created for files; separately for dirs), attributes, descriptions, owner, permissions/ACLs, sparse files, ADS | A (mtime/atime, chmod/chown, xattrs/ACLs) | M | Idea |  |
 | COPY-06 | Strip "Mark of the Web" | W | S | Dropped | Windows only |
 | COPY-07 | **Copy queues**: serialize jobs per device; auto-manage queues; named queues; ghost files for queued copies | L | L | Idea |  |
-| COPY-08 | Progress dialogs: speed graph, percent in title, pause/resume/skip/abort, unattended mode, minimize to the jobs bar | L | L | Done (unreleased) | No jobs bar yet (LST-13); delay, graph and title percentage are fixed, not options |
+| COPY-08 | Progress dialogs: speed graph, percent in title, pause/resume/skip/abort, unattended mode, minimize to the jobs bar | L | L | Done v0.2.0 | No jobs bar yet (LST-13); delay, graph and title percentage are fixed, not options |
 | COPY-09 | Pre-count files before copy/delete (optionally via an index) | L | S | Idea |  |
 | COPY-10 | Error dialog: retry/skip/abort; "skip identical"; merge folders without asking; export error list | L | M | Idea |  |
 | COPY-11 | **Make links**: shortcut, symlink (absolute/relative), hard link, junction, auto | L (symlink/hardlink) | M | Idea | The engine makes links already (CLIP-01); this adds the copy commands |
@@ -243,15 +243,15 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | COPY-18 | Install fonts | A (~/.local/share/fonts) | S | Idea |  |
 | COPY-19 | "Copy of" naming template; duplicate with date/time names; move to a new or dated sub-folder | L | M | Idea |  |
 | COPY-20 | Drag-and-drop semantics: drop on files/folders toggle; spring-loaded folders; drag between Listers | L | L | Idea |  |
-| COPY-21 | Copy and move are offered by the locked source side's selection, and say so, while the other side is in use | L | S | Done (unreleased) | Was IDEA-16. Errors show on the side in use |
-| COPY-22 | **Drag and drop**: drag files to the other side, a tab, a folder, the folder tree, the location bar, another window or another program. Ctrl copies, Shift moves, Ctrl+Shift links, Alt asks; the status bar says what letting go will do | L | M | Done (unreleased) | Was IDEA-18. With no key: moves on the same drive, copies between drives and from other programs, or as Edit → When Dropping Files says. Holding files over a tab shows it. For other programs the key must be down as the drag starts (Wayland fixes what a drag offers then). Tested by hand on Hyprland, within CargoHatch and with Flea and Nautilus (2026-11-25). Spring-loaded folders and the rest stay in COPY-20 |
+| COPY-21 | Copy and move are offered by the locked source side's selection, and say so, while the other side is in use | L | S | Done v0.2.0 | Was IDEA-16. Errors show on the side in use |
+| COPY-22 | **Drag and drop**: drag files to the other side, a tab, a folder, the folder tree, the location bar, another window or another program. Ctrl copies, Shift moves, Ctrl+Shift links, Alt asks; the status bar says what letting go will do | L | M | Done v0.2.0 | Was IDEA-18. With no key: moves on the same drive, copies between drives and from other programs, or as Edit → When Dropping Files says. Holding files over a tab shows it. For other programs the key must be down as the drag starts (Wayland fixes what a drag offers then). Tested by hand on Hyprland, within CargoHatch and with Flea and Nautilus (2026-11-25). Spring-loaded folders and the rest stay in COPY-20 |
 
 ## 10. Delete and recycle (DEL)
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| DEL-01 | Delete to Recycle Bin or permanently; Shift reverses | A (freedesktop Trash) | M | Done (unreleased) |  |
-| DEL-02 | Confirmation options: before starting, per file, per folder, read-only files, skip for recycle | L | M | Done (unreleased) | No "Shift skips confirmation", since Shift means delete for good here |
+| DEL-01 | Delete to Recycle Bin or permanently; Shift reverses | A (freedesktop Trash) | M | Done v0.2.0 |  |
+| DEL-02 | Confirmation options: before starting, per file, per folder, read-only files, skip for recycle | L | M | Done v0.2.0 | No "Shift skips confirmation", since Shift means delete for good here |
 | DEL-03 | Skip or fail on non-empty folders | L | S | Idea |  |
 | DEL-04 | **Secure wipe** delete (N passes); securely empty the recycle bin; securely erase free space (with an SSD warning) | L | M | Idea |  |
 | DEL-05 | Empty Recycle Bin; recycle bin toggles | A | S | Idea |  |
@@ -262,7 +262,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| REN-01 | **Inline rename** (F2) with selection modes (name only, all, extension, home/end) and control keys to switch parts | L | M | Done (unreleased) | F2 cycles name / whole / extension; configurable control keys are IDEA-06 |
+| REN-01 | **Inline rename** (F2) with selection modes (name only, all, extension, home/end) and control keys to switch parts | L | M | Done v0.2.0 | F2 cycles name / whole / extension; configurable control keys are IDEA-06 |
 | REN-02 | Inline: rename all selected at once; move to next/prev file keeping the cursor; rename into another dir by typing a path; auto-number on clash; suggestion popups | L | M | Idea |  |
 | REN-03 | **Advanced Rename dialog** with live **preview list** | L | L | Idea |  |
 | REN-04 | Modes: standard wildcard (`*`→`*`), **regex** find/replace, find & replace text, **script** (JS rename function) | L | L | Idea |  |
@@ -277,7 +277,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| FCMD-01 | **Create folder** with a name, path (`a/b/c`), multiple folders at once (one per line), name suggestions, optionally read into a new tab | L | M | Done (unreleased) | Several at once use brace lists and ranges (`{Jan,Feb}`, `{01..12}`) |
+| FCMD-01 | **Create folder** with a name, path (`a/b/c`), multiple folders at once (one per line), name suggestions, optionally read into a new tab | L | M | Done v0.2.0 | Several at once use brace lists and ranges (`{Jan,Feb}`, `{01..12}`) |
 | FCMD-02 | Create a new file (text file, or from a template / "New" menu); create from clipboard contents | L (~/Templates) | M | Idea |  |
 | FCMD-03 | **Change attributes and timestamps**: set/clear/toggle attrs, chmod with an owner/group/world grid, set created/modified to a date, shift by an offset, or copy from EXIF taken/digitized/parent dates; recurse with a filter | A (chmod/touch; no creation-time set) | M | Idea |  |
 | FCMD-04 | **Descriptions/comments** on files (stored inside the file, in a sidecar `descript.ion`, or in ADS) | A (xattr `user.comment`) | M | Idea |  |
@@ -296,16 +296,16 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | FCMD-17 | Play sound files (internal player) | L | S | Idea |  |
 | FCMD-18 | File type summary dialog (counts and sizes by extension/group) | L | M | Idea |  |
 | FCMD-19 | Run "Open with" menu, "Send to" menu, "New" menu | A (xdg MIME apps) | M | Idea |  |
-| FCMD-20 | **Open a terminal** in the current folder (Shift+F4, File menu, right-click on empty space), or in a folder from its right-click menu in the list or tree | L | S | Done (unreleased) | Was IDEA-10. `xdg-terminal-exec` picks the terminal, falling back to `$TERMINAL`; what goes wrong is shown in the status bar. Tested by hand with Alacritty (2026-11-25) |
-| FCMD-21 | **Open several selected items** at once, with Enter or the right-click menu: files in their applications, folders in new tabs after the current one | L | S | Done (unreleased) | Was IDEA-11. Asks first above 10 items. A double-click still opens the one clicked. Tested by hand (2026-11-25) |
+| FCMD-20 | **Open a terminal** in the current folder (Shift+F4, File menu, right-click on empty space), or in a folder from its right-click menu in the list or tree | L | S | Done v0.2.0 | Was IDEA-10. `xdg-terminal-exec` picks the terminal, falling back to `$TERMINAL`; what goes wrong is shown in the status bar. Tested by hand with Alacritty (2026-11-25) |
+| FCMD-21 | **Open several selected items** at once, with Enter or the right-click menu: files in their applications, folders in new tabs after the current one | L | S | Done v0.2.0 | Was IDEA-11. Asks first above 10 items. A double-click still opens the one clicked. Tested by hand (2026-11-25) |
 
 ## 13. Clipboard (CLIP)
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| CLIP-01 | Cut/copy/paste files; paste as link (symlink/hardlink) | L | M | Done (unreleased) | Paste as link: symbolic, relative, hard |
+| CLIP-01 | Cut/copy/paste files; paste as link (symlink/hardlink) | L | M | Done v0.2.0 | Paste as link: symbolic, relative, hard |
 | CLIP-02 | **Paste clipboard content as a file**: image (jpg/png/gif/bmp with quality), text (UTF-8/16/ANSI), zip/7z | L | M | Idea |  |
-| CLIP-03 | **Copy names**: full path, name, no extension, URL, UNC, quoted, WSL path, hashes, custom format | L | S | Done (unreleased) | Hashes are FCMD-09; UNC and WSL paths don't apply on Linux |
+| CLIP-03 | **Copy names**: full path, name, no extension, URL, UNC, quoted, WSL path, hashes, custom format | L | S | Done v0.2.0 | Hashes are FCMD-09; UNC and WSL paths don't apply on Linux |
 | CLIP-04 | Copy file contents as image or text; copy info tips; copy column data | L | M | Idea |  |
 | CLIP-05 | **Screenshot** (window/all, save to file, timer, format, quality, name template) | A (Wayland portal) | M | Idea |  |
 | CLIP-06 | Clipboard-change script event | L | S | Idea |  |
@@ -402,9 +402,9 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | CUST-12 | **Launch options** for programs dropped on buttons (send files, per file or single line, async, start-in, test harness) | L | M | Idea |  |
 | CUST-13 | Format Painter (copy button styling) | L | S | Idea |  |
 | CUST-14 | Customize-dialog command catalogue (categories, drag to toolbar), toolbar glossary | L | M | Idea |  |
-| CUST-15 | **Right-click menu** for files, folders and empty space (open, cut, copy, paste, rename, delete, create folder…), fixed for now | L | M | Done (unreleased) | Was IDEA-07. CUST-10 makes it editable |
-| CUST-16 | **Menu bar sorted by what it holds**: File acts on items (Open, Open in New Tab, Open on Other Side, Rename, Delete…), Edit copies, moves, selects (Select submenu) and finds, View shows, Go moves, a **Tabs** menu holds every tab command including lock and colour, Folder Aliases sit under Favourites, and a **Settings** menu gathers every choice that stays set | L | M | Done (unreleased) | Was IDEA-20 to IDEA-27. Every action is also the window's own, so keys work from any submenu. Reopen Last Closed heads the Recently Closed lists. The source/destination lock reads "Source and Destination ▸ Follow the Active Side / Keep This Side as…" so it isn't confused with a tab's lock. The preferences window (CFG-01) can replace Settings later |
-| CUST-17 | **Keyboard Shortcuts window** (Help menu, F1, or ? in the file list): every key, read from the menus, plus the file list's and dragging's own, with a search field; stays open beside the window | L | S | Done (unreleased) | Was IDEA-28 |
+| CUST-15 | **Right-click menu** for files, folders and empty space (open, cut, copy, paste, rename, delete, create folder…), fixed for now | L | M | Done v0.2.0 | Was IDEA-07. CUST-10 makes it editable |
+| CUST-16 | **Menu bar sorted by what it holds**: File acts on items (Open, Open in New Tab, Open on Other Side, Rename, Delete…), Edit copies, moves, selects (Select submenu) and finds, View shows, Go moves, a **Tabs** menu holds every tab command including lock and colour, Folder Aliases sit under Favourites, and a **Settings** menu gathers every choice that stays set | L | M | Done v0.2.0 | Was IDEA-20 to IDEA-27. Every action is also the window's own, so keys work from any submenu. Reopen Last Closed heads the Recently Closed lists. The source/destination lock reads "Source and Destination ▸ Follow the Active Side / Keep This Side as…" so it isn't confused with a tab's lock. The preferences window (CFG-01) can replace Settings later |
+| CUST-17 | **Keyboard Shortcuts window** (Help menu, F1, or ? in the file list): every key, read from the menus, plus the file list's and dragging's own, with a search field; stays open beside the window | L | S | Done v0.2.0 | Was IDEA-28 |
 
 ## 20. File types (FTYP)
 
@@ -435,7 +435,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| FAV-01 | **Favourites** list (tree with branches, sort, separators); Favourites Bar; add dialog | L | L | Done (unreleased) | Also in the folder tree, and files as well as folders |
+| FAV-01 | **Favourites** list (tree with branches, sort, separators); Favourites Bar; add dialog | L | L | Done v0.2.0 | Also in the folder tree, and files as well as folders |
 | FAV-02 | **SmartFavorites**: automatically learned frequently-used folders, with thresholds and exclusions | L | M | Idea |  |
 | FAV-03 | Recent folders list (size, include virtual, ignore transit folders) | L | M | Idea |  |
 | FAV-04 | Privacy: disable or clear history categories | L | S | Idea |  |
@@ -445,10 +445,10 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 | ID | Feature | Fit | Size | Status | Notes |
 |---|---|---|---|---|---|
-| TREE-01 | Tree styles, indent, item height, full-row select, root separators, header | L | M | Done (unreleased) | Drive label styles left out: Linux mounts are named by their folder |
+| TREE-01 | Tree styles, indent, item height, full-row select, root separators, header | L | M | Done v0.2.0 | Drive label styles left out: Linux mounts are named by their folder |
 | TREE-02 | Highlight the path to the selection and to all open tabs (with tab colour) | L | M | Idea |  |
-| TREE-03 | Content: hidden folders, system folders, archives, virtual folders; remove dynamically added | L | M | Done (unreleased) | Archives split out as TREE-09; virtual folders beyond the trash are COLL-03 |
-| TREE-04 | Auto-expand to the current folder; collapse non-selected branches (unless open in other tabs); remember expansion in layouts/tabs | L | M | Done (unreleased) |  |
+| TREE-03 | Content: hidden folders, system folders, archives, virtual folders; remove dynamically added | L | M | Done v0.2.0 | Archives split out as TREE-09; virtual folders beyond the trash are COLL-03 |
+| TREE-04 | Auto-expand to the current folder; collapse non-selected branches (unless open in other tabs); remember expansion in layouts/tabs | L | M | Done v0.2.0 |  |
 | TREE-05 | **Expansion pins** (permanently expanded branches) | L | S | Idea |  |
 | TREE-06 | Spring-loaded expansion while dragging | L | S | Idea |  |
 | TREE-07 | Tree lock (don't follow navigation) | L | S | Idea |  |
@@ -465,7 +465,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | LOOK-04 | Icon sets (import, order, disable) | L | M | Idea |  |
 | LOOK-05 | Sound events (operation complete, errors) | L | S | Idea |  |
 | LOOK-06 | Language/translation system | L | M | Idea |  |
-| LOOK-07 | **Menus outlined in the theme accent**, with visible separator lines, so an open menu stands apart from the window behind it | L | S | Done (unreleased) | Drawn by the app style, so every menu and right-click menu has it and it follows a theme change |
+| LOOK-07 | **Menus outlined in the theme accent**, with visible separator lines, so an open menu stands apart from the window behind it | L | S | Done v0.2.0 | Drawn by the app style, so every menu and right-click menu has it and it follows a theme change |
 
 ## 25. Configuration and program (CFG)
 
@@ -486,7 +486,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 | CFG-13 | Mouse/keyboard behaviours: Alt-click to edit buttons, Alt key toolbar mode, tooltips, single-click mode | L | M | Idea |  |
 | CFG-14 | Cloud storage awareness (sync status columns, allow download of placeholders) | A | M | Idea |  |
 | CFG-15 | External tools: text viewer, script editor, external image formats | L | M | Idea |  |
-| CFG-16 | **About window** with the logo, version and licence | L | S | Done (unreleased) | Was IDEA-15. Under Help. Credits the user and Claude |
+| CFG-16 | **About window** with the logo, version and licence | L | S | Done v0.2.0 | Was IDEA-15. Under Help. Credits the user and Claude |
 
 ---
 
@@ -503,7 +503,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 ## Done by release
 
 - **v0.1.0** (pre-release, 2026-11-21): LST-01/02/03/04/06/07/19/20 (in part)/21/26 (in part), TAB-01/02/04/05/07/08/09/10/11/12/13/15/18/19, NAV-01/02
-- **Unreleased:** VIEW-01, VIEW-02 (in part), SORT-01/02/03, COPY-01/02/03/08, DEL-01/02, SEL-01/02, REN-01, FCMD-01, CLIP-01/03, FILT-01/03, SEL-11, CUST-15, NAV-03/07, LST-08, TREE-01/03/04, FAV-01, CFG-16, LST-34, COPY-21/22, FCMD-20/21, NAV-08/18, LST-35, CUST-16/17, LOOK-07
+- **v0.2.0** (first public release, 2026-11-27): VIEW-01, VIEW-02 (in part), SORT-01/02/03, COPY-01/02/03/08, DEL-01/02, SEL-01/02, REN-01, FCMD-01, CLIP-01/03, FILT-01/03, SEL-11, CUST-15, NAV-03/07, LST-08, TREE-01/03/04, FAV-01, CFG-16, LST-34, COPY-21/22, FCMD-20/21, NAV-08/18, LST-35, CUST-16/17, LOOK-07
 
 ---
 
