@@ -11,10 +11,13 @@ jobs:
     # Arch has the same Qt as the people who install CargoHatch; Ubuntu's is too old.
     container: archlinux:latest
     steps:
-      - name: Install the build tools and Qt
-        run: pacman -Syu --noconfirm --needed base-devel git qt6-base qt6-wayland
+      - name: Install the build tools, Qt and a font
+        run: |
+          pacman -Syu --noconfirm --needed base-devel git qt6-base qt6-wayland ttf-dejavu
+          # Root can write read-only files, which the delete tests rely on not happening.
+          useradd -m tester
       - uses: actions/checkout@v4
-      - name: Build
-        run: bin/build
-      - name: Test
-        run: bin/test
+      - name: Build and test as an ordinary user
+        run: |
+          chown -R tester "$GITHUB_WORKSPACE"
+          su tester -c 'bin/build && bin/test'
