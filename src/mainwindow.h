@@ -164,6 +164,8 @@ public slots:
     void openSelection(FolderTab *tab);
     // FCMD-01.
     void createFolder();
+    // REN-05, REN-10: find and replace in, and recapitalise, the selected names.
+    void renameSeveral();
     // IDEA-10: a terminal in `folder`, or in the active tab's folder.
     void openTerminal(const QString &folder = {});
     // LST-08: the folder tree, one for the window or one for each side.
@@ -320,7 +322,7 @@ private:
     QAction *m_showTree, *m_treeOptions, *m_focusTree;
     QMenu *m_tabsMenu, *m_settingsMenu, *m_selectMenu, *m_defaultFormatMenu, *m_dualLayoutMenu;
     QMenu *m_tabLockMenu, *m_tabColorMenu, *m_tabSettingsMenu, *m_windowSettingsMenu;
-    QAction *m_open, *m_makeHome, *m_linkTab, *m_shortcuts;
+    QAction *m_open, *m_makeHome, *m_linkTab, *m_shortcuts, *m_renameSeveral;
     QPointer<ShortcutsDialog> m_shortcutsDialog;
     QAction *m_filterBar, *m_findNext, *m_findPrevious;
     QMenu *m_aliasMenu, *m_completionMenu;

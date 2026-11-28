@@ -1111,6 +1111,38 @@ bool FolderTab::renameItem(const QString &oldName, const QString &rawNewName) {
     return true;
 }
 
+QList<QPair<QString, bool>> FolderTab::selectedItems() const {
+    QList<QPair<QString, bool>> items;
+    for (const QString &path : selectedPaths()) {
+        const QString name = QFileInfo(path).fileName();
+        const int row = m_model->rowOf(name);
+        items.append({name, row >= 0 && m_model->entry(row).isDir});
+    }
+    return items;
+}
+
+QSet<QString> FolderTab::itemNames() const {
+    QSet<QString> names;
+    for (int row = 0; row < m_model->rowCount(); ++row)
+        names.insert(m_model->entry(row).name);
+    return names;
+}
+
+bool FolderTab::renameItems(const QList<BatchRename::Item> &items) {
+    rememberSelection();
+    QStringList renamed;
+    const QStringList errors = BatchRename::perform(m_path, items, &renamed);
+    // The list is read again, which also picks up names that traded places.
+    selectNew(renamed);
+    if (errors.isEmpty()) {
+        clearError();
+        return true;
+    }
+    setError(errors.size() == 1 ? errors.first()
+                                : tr("%1 (and %n more problems)", "", int(errors.size() - 1)).arg(errors.first()));
+    return false;
+}
+
 void FolderTab::openName(const QString &name) {
     const int row = m_model->rowOf(name);
     if (isShowing(row))

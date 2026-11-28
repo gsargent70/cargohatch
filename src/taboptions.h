@@ -73,6 +73,12 @@ struct TabOptions {
     bool selectNextAfterDelete = true;
     // REN-01: "stem", "whole", "extension", "start" or "end".
     QString renameSelect = QStringLiteral("stem");
+    // Rename Several's choices, kept for next time; Find and Replace aren't.
+    bool renameMatchCase = false;
+    bool renameIgnoreExtension = true;
+    bool renameApplyWithoutMatch = false;
+    int renameCase = 0;          // BatchRename::Case
+    int renameExtensionCase = 0; // BatchRename::ExtensionCase
     RenameDelegate::Selection renameSelection() const;
     static QString renameSelectId(RenameDelegate::Selection selection);
 

@@ -9,6 +9,11 @@
   It sits beside or below the files, can be resized, and remembers all that
   with the window and in layouts. Its padlock keeps a file in view while you
   move on, and its arrows step through the list.
+- Rename Several (Shift+F2, File menu or right-click) finds and replaces in
+  the selected names and changes their capitalisation, with a preview of
+  every new name. It can match case, leave extensions out, and change the
+  capitalisation even where Find doesn't match. It never renames over
+  another item, and stops names that would clash or become hidden.
 - Settings → Viewer Pane can keep the last item in view when nothing is
   selected, and wrap long lines of text.
 

@@ -264,14 +264,14 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 |---|---|---|---|---|---|
 | REN-01 | **Inline rename** (F2) with selection modes (name only, all, extension, home/end) and control keys to switch parts | L | M | Done v0.2.0 | F2 cycles name / whole / extension; configurable control keys are IDEA-06 |
 | REN-02 | Inline: rename all selected at once; move to next/prev file keeping the cursor; rename into another dir by typing a path; auto-number on clash; suggestion popups | L | M | Idea |  |
-| REN-03 | **Advanced Rename dialog** with live **preview list** | L | L | Idea |  |
+| REN-03 | **Advanced Rename dialog** with live **preview list** | L | L | Idea | Started as Rename Several (Shift+F2) with a live preview; modes, numbering and presets still to do |
 | REN-04 | Modes: standard wildcard (`*`→`*`), **regex** find/replace, find & replace text, **script** (JS rename function) | L | L | Idea |  |
-| REN-05 | Case actions: upper, lower, first word, all words; extension upper/lower | L | S | Idea |  |
+| REN-05 | Case actions: upper, lower, first word, all words; extension upper/lower | L | S | Done (unreleased) | In Rename Several (Shift+F2): lower, UPPER, first word, every word; extensions lower or upper |
 | REN-06 | **Numbering** from N by step; auto-number on clash; macros (multi-step recorded rename) | L | M | Idea |  |
 | REN-07 | **Metadata-based names** using `{field}` codes (EXIF date, ID3 artist, dimensions…) | L | L | Idea |  |
 | REN-08 | Recurse into sub-folders; rename folders as well; rename "matching" files together (same stem) | L | M | Idea |  |
 | REN-09 | Presets (save/load/history); Undo rename; paste names from clipboard (one per line) | L | M | Idea |  |
-| REN-10 | Ignore extension, case-sensitive match, apply even if no match | L | S | Idea |  |
+| REN-10 | Ignore extension, case-sensitive match, apply even if no match | L | S | Done (unreleased) | In Rename Several: match case, leave extensions out, change capitalisation where Find doesn't match |
 
 ## 12. Other file commands (FCMD)
 
@@ -507,7 +507,7 @@ A "Lister" is a file-manager window. Each Lister has one or two file displays, a
 
 - **v0.1.0** (pre-release, 2026-11-21): LST-01/02/03/04/06/07/19/20 (in part)/21/26 (in part), TAB-01/02/04/05/07/08/09/10/11/12/13/15/18/19, NAV-01/02
 - **v0.2.0** (first public release, 2026-11-27): VIEW-01, VIEW-02 (in part), SORT-01/02/03, COPY-01/02/03/08, DEL-01/02, SEL-01/02, REN-01, FCMD-01, CLIP-01/03, FILT-01/03, SEL-11, CUST-15, NAV-03/07, LST-08, TREE-01/03/04, FAV-01, CFG-16, LST-34, COPY-21/22, FCMD-20/21, NAV-08/18, LST-35, CUST-16/17, LOOK-07
-- **Unreleased:** LST-09, VWR-01
+- **Unreleased:** LST-09, VWR-01, REN-05, REN-10
 
 ---
 

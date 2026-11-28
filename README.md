@@ -77,7 +77,8 @@ still change between versions.
   names or paths as text in several formats.
 - Delete moves to the trash; Shift+Delete deletes for good after asking.
 - F2 renames in place; press it again to select the whole name or the
-  extension.
+  extension. Shift+F2 renames several at once, with find and replace and
+  changes of capitalisation, previewed before anything changes.
 - Create a folder, a path of folders, or many at once (`Disc {01..12}`).
 - Enter opens every selected item: files in their applications, folders in
   new tabs. Shift+F4 opens a terminal here.
@@ -137,7 +138,7 @@ CargoHatch is written in C++17 with Qt 6 Widgets and built with qmake.
 | F5, F6 | Copy, move the selection to the other side |
 | Shift+F5, Shift+F6 | Copy, move the selection to a folder you choose |
 | Ctrl+X, Ctrl+C, Ctrl+V | Cut, copy, paste |
-| F2 | Rename |
+| F2, Shift+F2 | Rename, rename several |
 | F7 | Create a folder |
 | Delete, Shift+Delete | Move to the trash, delete for good |
 | Ctrl+A, Esc | Select all, select none |

@@ -41,6 +41,11 @@ TabOptions TabOptions::load(QSettings &settings) {
     o.deleteReadOnlyWithoutAsking = settings.value("delete/readOnlyWithoutAsking", o.deleteReadOnlyWithoutAsking).toBool();
     o.selectNextAfterDelete = settings.value("delete/selectNext", o.selectNextAfterDelete).toBool();
     o.renameSelect = settings.value("rename/select", o.renameSelect).toString();
+    o.renameMatchCase = settings.value("rename/matchCase", o.renameMatchCase).toBool();
+    o.renameIgnoreExtension = settings.value("rename/ignoreExtension", o.renameIgnoreExtension).toBool();
+    o.renameApplyWithoutMatch = settings.value("rename/applyWithoutMatch", o.renameApplyWithoutMatch).toBool();
+    o.renameCase = qBound(0, settings.value("rename/case", o.renameCase).toInt(), 4);
+    o.renameExtensionCase = qBound(0, settings.value("rename/extensionCase", o.renameExtensionCase).toInt(), 2);
     GlobalFilter &f = o.filter;
     f.showHidden = settings.value("filters/showHidden", f.showHidden).toBool();
     f.hideListed = settings.value("filters/hideListed", f.hideListed).toBool();
@@ -129,6 +134,11 @@ void TabOptions::save(QSettings &settings) const {
     settings.setValue("delete/readOnlyWithoutAsking", deleteReadOnlyWithoutAsking);
     settings.setValue("delete/selectNext", selectNextAfterDelete);
     settings.setValue("rename/select", renameSelect);
+    settings.setValue("rename/matchCase", renameMatchCase);
+    settings.setValue("rename/ignoreExtension", renameIgnoreExtension);
+    settings.setValue("rename/applyWithoutMatch", renameApplyWithoutMatch);
+    settings.setValue("rename/case", renameCase);
+    settings.setValue("rename/extensionCase", renameExtensionCase);
     settings.setValue("filters/showHidden", filter.showHidden);
     settings.setValue("filters/hideListed", filter.hideListed);
     settings.setValue("filters/hideNames", filter.hideNames);

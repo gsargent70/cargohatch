@@ -12,6 +12,7 @@
 #include "globalfilter.h"
 #include "quickfilter.h"
 #include "history.h"
+#include "batchrename.h"
 #include "renamedelegate.h"
 #include "viewformat.h"
 
@@ -189,6 +190,13 @@ public:
     // REN-01: renames `oldName` in this folder to `newName`, never over an
     // existing item. False, with the reason in the status bar, if it can't.
     bool renameItem(const QString &oldName, const QString &newName);
+    // The selected items' names, and whether each is a folder, in order; and
+    // every name in the folder, shown or not (Rename Several).
+    QList<QPair<QString, bool>> selectedItems() const;
+    QSet<QString> itemNames() const;
+    // Renames them as planned, then selects the new names; false, with the
+    // errors shown, if any couldn't be renamed.
+    bool renameItems(const QList<BatchRename::Item> &items);
     // The same on disk alone; returns what went wrong, or an empty string.
     static QString renameOnDisk(const QString &folder, const QString &oldName, const QString &newName);
     // Which part of the name inline rename starts with selected.

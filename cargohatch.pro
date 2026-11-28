@@ -19,6 +19,8 @@ HEADERS += \
     src/foldertree.h \
     src/pathcompleter.h \
     src/preview.h \
+    src/batchrename.h \
+    src/renamedialog.h \
     src/viewerpane.h \
     src/folderaliases.h \
     src/aliasdialog.h \
@@ -69,6 +71,8 @@ SOURCES += \
     src/foldertree.cpp \
     src/pathcompleter.cpp \
     src/preview.cpp \
+    src/batchrename.cpp \
+    src/renamedialog.cpp \
     src/viewerpane.cpp \
     src/folderaliases.cpp \
     src/aliasdialog.cpp \

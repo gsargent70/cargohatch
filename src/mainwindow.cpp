@@ -39,6 +39,7 @@
 #include "savedsets.h"
 #include "tabswitcher.h"
 #include "terminal.h"
+#include "renamedialog.h"
 #include "viewerpane.h"
 
 MainWindow::MainWindow(const QString &startPath, QSettings *settings, QWidget *parent)
@@ -528,6 +529,7 @@ void MainWindow::createActions() {
     m_fileMenu->addSeparator();
     m_createFolder = action(m_fileMenu, {QKeySequence(Qt::Key_F7)}, [this] { createFolder(); });
     m_rename = action(m_fileMenu, {QKeySequence(Qt::Key_F2)}, [this] { activeTab()->startRename(); });
+    m_renameSeveral = action(m_fileMenu, {QKeySequence(Qt::SHIFT | Qt::Key_F2)}, [this] { renameSeveral(); });
     m_duplicate = action(m_fileMenu, {QKeySequence(Qt::CTRL | Qt::Key_D)}, [this] { duplicateSelection(); });
     m_fileMenu->addSeparator();
     m_trash = action(m_fileMenu, {QKeySequence(Qt::Key_Delete)}, [this] { deleteSelection(false); });
@@ -1379,6 +1381,7 @@ void MainWindow::updateChrome() {
         a->setEnabled(selected);
     updateTransferActions();
     m_rename->setEnabled(items);
+    m_renameSeveral->setEnabled(selected);
     for (QAction *a : {m_selectAll, m_selectFiles, m_selectFolders, m_invertSelection, m_selectMatching})
         a->setEnabled(items);
     m_selectNone->setEnabled(selected);
@@ -1539,6 +1542,7 @@ void MainWindow::retranslate() {
     m_openTerminal->setText(tr("Open Terminal Here"));
     m_createFolder->setText(tr("Create Folder…"));
     m_rename->setText(tr("Rename"));
+    m_renameSeveral->setText(tr("Rename Several…"));
     m_duplicate->setText(tr("Duplicate"));
     m_newWindow->setText(tr("New Window"));
     m_closeWindow->setText(tr("Close Window"));
@@ -2361,6 +2365,38 @@ void MainWindow::setTreeShown(bool shown) {
     updateChrome();
 }
 
+void MainWindow::renameSeveral() {
+    FolderTab *tab = activeTab();
+    const QList<QPair<QString, bool>> items = tab->selectedItems();
+    if (items.isEmpty())
+        return;
+    QSet<QString> others = tab->itemNames();
+    for (const auto &item : items)
+        others.remove(item.first);
+    BatchRename rules;
+    rules.matchCase = m_options.renameMatchCase;
+    rules.ignoreExtension = m_options.renameIgnoreExtension;
+    rules.applyWithoutMatch = m_options.renameApplyWithoutMatch;
+    rules.nameCase = BatchRename::Case(m_options.renameCase);
+    rules.extensionCase = BatchRename::ExtensionCase(m_options.renameExtensionCase);
+    RenameDialog dialog(rules, items, others, this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+    const BatchRename chosen = dialog.rules();
+    TabOptions options = m_options;
+    options.renameMatchCase = chosen.matchCase;
+    options.renameIgnoreExtension = chosen.ignoreExtension;
+    options.renameApplyWithoutMatch = chosen.applyWithoutMatch;
+    options.renameCase = int(chosen.nameCase);
+    options.renameExtensionCase = int(chosen.extensionCase);
+    setTabOptions(options);
+    // The folder may have changed while the dialog was open.
+    QSet<QString> now = tab->itemNames();
+    for (const auto &item : items)
+        now.remove(item.first);
+    tab->renameItems(chosen.plan(items, now));
+}
+
 void MainWindow::setViewerShown(bool shown) {
     if (shown == m_viewerShown && m_viewer->isHidden() == !shown)
         return;
@@ -2616,8 +2652,7 @@ QMenu *MainWindow::contextMenu(bool onItems) {
     transfer(tr("Move To…"), m_moveTo, [this](FolderTab *t) { copySelectionTo(true, t); });
     menu->addAction(m_duplicate);
     menu->addSeparator();
-    if (one)
-        menu->addAction(m_rename);
+    menu->addAction(one ? m_rename : m_renameSeveral);
     menu->addAction(m_trash);
     menu->addAction(m_deleteForever);
     if (one) {

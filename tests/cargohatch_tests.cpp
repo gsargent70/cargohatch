@@ -76,6 +76,8 @@
 #include "theme.h"
 #include "translator.h"
 #include "preview.h"
+#include "batchrename.h"
+#include "renamedialog.h"
 #include "viewerpane.h"
 #include <QPainter>
 #include <QPdfWriter>
@@ -5045,6 +5047,157 @@ private slots:
         QVERIFY(menuEntry(w, {"View", "Viewer Pane"})->isChecked());
         w.setViewerShown(false);
         QVERIFY(!menuEntry(w, {"View", "Viewer Pane"})->isChecked());
+    }
+
+    // --- REN-05, REN-10 (Rename Several) ---------------------------------
+
+    void renameSeveralWorksOutNames()
+    {
+        using C = BatchRename::Case;
+        QCOMPARE(BatchRename::changeCase("the BIG sleep", C::Upper), QString("THE BIG SLEEP"));
+        QCOMPARE(BatchRename::changeCase("the BIG sleep", C::Lower), QString("the big sleep"));
+        QCOMPARE(BatchRename::changeCase("the BIG sleep", C::FirstWord), QString("The big sleep"));
+        QCOMPARE(BatchRename::changeCase("01 don't stop-me now", C::EveryWord), QString("01 Don't Stop-Me Now"));
+        QCOMPARE(BatchRename::changeCase(QString::fromUtf8("élan vital"), C::EveryWord), QString::fromUtf8("Élan Vital"));
+
+        BatchRename r;
+        r.nameCase = C::Upper;
+        // The extension is left alone unless asked; it has its own case.
+        QCOMPARE(r.apply("holiday photo.jpg", false), QString("HOLIDAY PHOTO.jpg"));
+        r.ignoreExtension = false;
+        QCOMPARE(r.apply("holiday photo.jpg", false), QString("HOLIDAY PHOTO.JPG"));
+        r.extensionCase = BatchRename::ExtensionCase::Lower;
+        QCOMPARE(r.apply("holiday photo.JPG", false), QString("HOLIDAY PHOTO.jpg"));
+        // Folders and dotfiles have no extension.
+        r.ignoreExtension = true;
+        QCOMPARE(r.apply("photos.2026", true), QString("PHOTOS.2026"));
+        QCOMPARE(r.apply(".bashrc", false), QString(".BASHRC"));
+
+        // Find and replace, in any case unless told otherwise.
+        BatchRename f;
+        f.find = "img";
+        f.replace = "Photo";
+        bool matched = false;
+        QCOMPARE(f.apply("IMG_0001.img", false, &matched), QString("Photo_0001.img"));
+        QVERIFY(matched);
+        f.matchCase = true;
+        QCOMPARE(f.apply("IMG_0001.img", false, &matched), QString("IMG_0001.img"));
+        QVERIFY(!matched);
+        // Ignoring the extension keeps Find out of it.
+        f.matchCase = false;
+        f.find = "jpeg";
+        f.replace = "jpg";
+        QCOMPARE(f.apply("cat.jpeg", false, &matched), QString("cat.jpeg"));
+        QVERIFY(!matched);
+        f.ignoreExtension = false;
+        QCOMPARE(f.apply("cat.jpeg", false), QString("cat.jpg"));
+
+        // Names Find doesn't match keep their case, unless told otherwise.
+        BatchRename a;
+        a.find = "draft";
+        a.replace = "final";
+        a.nameCase = C::EveryWord;
+        QCOMPARE(a.apply("my draft.txt", false), QString("My Final.txt"));
+        QCOMPARE(a.apply("old notes.txt", false), QString("old notes.txt"));
+        a.applyWithoutMatch = true;
+        QCOMPARE(a.apply("old notes.txt", false), QString("Old Notes.txt"));
+    }
+
+    void renameSeveralFindsProblems()
+    {
+        BatchRename r;
+        r.find = "a";
+        r.replace = "";
+        const QList<QPair<QString, bool>> items = {{"a.txt", false}, {"b.txt", false}, {"ab.txt", false}, {"ca.txt", false}};
+        QList<BatchRename::Item> plan = r.plan(items, {"c.txt", "x"});
+        QCOMPARE(plan.size(), 4);
+        // "a.txt" would be the hidden ".txt"; "ab.txt" would clash with "b.txt", which
+        // stays; "ca.txt" would be "c.txt", which is taken.
+        QVERIFY(plan.at(0).problem.contains("hidden"));
+        QVERIFY(!plan.at(1).changes());
+        QVERIFY(plan.at(2).problem.contains("b.txt"));
+        QVERIFY(plan.at(3).problem.contains("already exists"));
+        r.replace = "/";
+        QVERIFY(r.plan({{"a.txt", false}}, {}).first().problem.contains("/"));
+        r.replace = "";
+        r.ignoreExtension = false;
+        QVERIFY(r.plan({{"a", false}}, {}).first().problem.contains("empty"));
+    }
+
+    void renameSeveralRenamesOnDisk()
+    {
+        QTemporaryDir dir;
+        const QString d = dir.path();
+        write(d + "/one.txt", "1");
+        write(d + "/two.txt", "2");
+        write(d + "/photo.JPG", "p");
+        // Trading places goes by way of temporary names.
+        BatchRename::Item a{"one.txt", false, "two.txt", true, {}};
+        BatchRename::Item b{"two.txt", false, "one.txt", true, {}};
+        BatchRename::Item c{"photo.JPG", false, "photo.jpg", true, {}};
+        QStringList renamed;
+        QCOMPARE(BatchRename::perform(d, {a, b, c}, &renamed), QStringList());
+        QCOMPARE(renamed.size(), 3);
+        QCOMPARE(read(d + "/one.txt"), QByteArray("2"));
+        QCOMPARE(read(d + "/two.txt"), QByteArray("1"));
+        QVERIFY(QFile::exists(d + "/photo.jpg"));
+        QCOMPARE(QDir(d).entryList(QDir::Files | QDir::Hidden).size(), 3);
+
+        // Never over another file: it keeps its name and says why.
+        write(d + "/three.txt", "3");
+        BatchRename::Item clash{"three.txt", false, "one.txt", true, {}};
+        const QStringList errors = BatchRename::perform(d, {clash});
+        QCOMPARE(errors.size(), 1);
+        QVERIFY(QFile::exists(d + "/three.txt"));
+        QCOMPARE(read(d + "/one.txt"), QByteArray("2"));
+        // Items with problems are left alone.
+        BatchRename::Item flagged{"three.txt", false, "four.txt", true, "no"};
+        QVERIFY(BatchRename::perform(d, {flagged}).isEmpty());
+        QVERIFY(QFile::exists(d + "/three.txt"));
+    }
+
+    void renameSeveralDialogPreviews()
+    {
+        BatchRename rules;
+        RenameDialog dialog(rules, {{"IMG_1.jpg", false}, {"IMG_2.jpg", false}, {"notes.txt", false}}, {"Photo 1.jpg"});
+        QVERIFY(!dialog.canRename());
+        QCOMPARE(dialog.previewList()->topLevelItemCount(), 3);
+        dialog.findField()->setText("img_");
+        dialog.replaceField()->setText("Photo ");
+        // "Photo 1.jpg" is taken by another file.
+        QVERIFY(!dialog.canRename());
+        QVERIFY(dialog.summary().contains("Photo 1.jpg"));
+        dialog.replaceField()->setText("Holiday ");
+        QVERIFY(dialog.canRename());
+        QCOMPARE(dialog.previewList()->topLevelItem(0)->text(1), QString("Holiday 1.jpg"));
+        QCOMPARE(dialog.previewList()->topLevelItem(2)->text(1), QString("(unchanged)"));
+        QCOMPARE(dialog.summary(), QString("2 of 3 items will be renamed."));
+        QCOMPARE(dialog.rules().find, QString("img_"));
+    }
+
+    void renameSeveralFromTheWindow()
+    {
+        QTemporaryDir dir;
+        write(dir.path() + "/a.TXT", "a");
+        write(dir.path() + "/b.TXT", "b");
+        MainWindow w(dir.path());
+        w.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        FolderTab *tab = w.activeTab();
+        QTRY_COMPARE(tab->itemCount(), 2);
+        QAction *several = menuEntry(w, {"File", "Rename Several…"});
+        QVERIFY(several);
+        QCOMPARE(several->shortcut(), QKeySequence(Qt::SHIFT | Qt::Key_F2));
+        QVERIFY(!several->isEnabled());
+        tab->selectAll();
+        QTRY_VERIFY(several->isEnabled());
+        const auto items = tab->selectedItems();
+        QCOMPARE(items.size(), 2);
+        BatchRename r;
+        r.extensionCase = BatchRename::ExtensionCase::Lower;
+        QVERIFY(tab->renameItems(r.plan(items, {})));
+        QVERIFY(QFile::exists(dir.path() + "/a.txt"));
+        QTRY_COMPARE(tab->selectedPaths(), QStringList({canonical(dir.path()) + "/a.txt", canonical(dir.path()) + "/b.txt"}));
     }
 
     static QAction *menuEntry(QMainWindow &w, const QStringList &path)
